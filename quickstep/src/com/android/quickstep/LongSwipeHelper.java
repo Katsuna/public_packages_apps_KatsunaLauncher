@@ -15,10 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.katsuna.launcher.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
+import static com.katsuna.launcher.LauncherState.ALL_APPS;
+import static com.katsuna.launcher.LauncherState.OVERVIEW;
+import static com.katsuna.launcher.anim.Interpolators.DEACCEL;
 import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
@@ -26,16 +26,16 @@ import static com.android.systemui.shared.recents.utilities.Utilities.getSurface
 import android.animation.ValueAnimator;
 import android.view.Surface;
 
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.util.FlingBlockCheck;
+import com.katsuna.launcher.Launcher;
+import com.katsuna.launcher.LauncherAnimUtils;
+import com.katsuna.launcher.R;
+import com.katsuna.launcher.allapps.AllAppsTransitionController;
+import com.katsuna.launcher.allapps.DiscoveryBounce;
+import com.katsuna.launcher.anim.AnimatorPlaybackController;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto.Action.Direction;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto.Action.Touch;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto.ContainerType;
+import com.katsuna.launcher.util.FlingBlockCheck;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;

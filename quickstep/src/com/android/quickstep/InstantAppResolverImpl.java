@@ -23,8 +23,8 @@ import android.content.pm.InstantAppInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.util.InstantAppResolver;
+import com.katsuna.launcher.AppInfo;
+import com.katsuna.launcher.util.InstantAppResolver;
 
 import java.util.ArrayList;
 import java.util.List;

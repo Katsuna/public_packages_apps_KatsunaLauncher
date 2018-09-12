@@ -43,20 +43,20 @@ android {
     productFlavors {
         aosp {
             dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId 'com.katsuna.launcher'
+            testApplicationId 'com.katsuna.launcher.tests'
         }
 
         l3go {
             dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId 'com.katsuna.launcher'
+            testApplicationId 'com.katsuna.launcher.tests'
         }
 
         quickstep {
             dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId 'com.katsuna.launcher'
+            testApplicationId 'com.katsuna.launcher.tests'
         }
     }
 
@@ -145,9 +145,9 @@ protobuf {
                 task.builtins {
                     remove java
                     javanano {
-                        option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
-                        option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
-                        option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
+                        option "java_package=launcher_log_extension.proto|com.katsuna.launcher.userevent.nano"
+                        option "java_package=launcher_log.proto|com.katsuna.launcher.userevent.nano"
+                        option "java_package=launcher_dump.proto|com.katsuna.launcher.model.nano"
                         option "enum_style=java"
                     }
                 }

@@ -19,8 +19,8 @@ import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.katsuna.launcher.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.katsuna.launcher.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.systemui.shared.system.ActivityManagerWrapper
         .CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -47,14 +47,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.katsuna.launcher.AbstractFloatingView;
+import com.katsuna.launcher.BaseDraggingActivity;
+import com.katsuna.launcher.InvariantDeviceProfile;
+import com.katsuna.launcher.MainThreadExecutor;
+import com.katsuna.launcher.anim.AnimationSuccessListener;
+import com.katsuna.launcher.logging.UserEventDispatcher;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto.Action;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.FallbackActivityControllerHelper;

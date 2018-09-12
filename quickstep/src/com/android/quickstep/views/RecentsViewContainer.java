@@ -16,8 +16,8 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
+import static com.katsuna.launcher.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.katsuna.launcher.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -26,8 +26,8 @@ import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.R;
+import com.katsuna.launcher.InsettableFrameLayout;
+import com.katsuna.launcher.R;
 
 import java.util.ArrayList;
 

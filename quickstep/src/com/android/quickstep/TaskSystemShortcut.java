@@ -16,7 +16,7 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
+import static com.katsuna.launcher.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -30,15 +30,15 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.util.InstantAppResolver;
+import com.katsuna.launcher.AbstractFloatingView;
+import com.katsuna.launcher.BaseDraggingActivity;
+import com.katsuna.launcher.DeviceProfile;
+import com.katsuna.launcher.ItemInfo;
+import com.katsuna.launcher.R;
+import com.katsuna.launcher.ShortcutInfo;
+import com.katsuna.launcher.popup.SystemShortcut;
+import com.katsuna.launcher.userevent.nano.LauncherLogProto;
+import com.katsuna.launcher.util.InstantAppResolver;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
