@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/color_initial_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.katsuna.commons.controls.KatsunaImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_palette_grey600_24dp"
+            tools:ignore="ContentDescription" />
+
+        <com.katsuna.commons.controls.KatsunaTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/settings_label_margin_start"
+            android:text="@string/common_color"
+            app:sizeProfileKey="SUBHEADER" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/color_expanded_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/settings_controls_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.katsuna.commons.controls.KatsunaTextView
+            android:id="@+id/select_color_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/common_select_palette"
+            app:sizeProfileKey="BODY_2" />
+
+        <RadioGroup
+            android:id="@+id/color_profiles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/profile_impairement"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableEnd="@drawable/katsuna_color_profile_1"
+                android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                android:padding="16dp" />
+
+            <RadioButton
+                android:id="@+id/profile_main"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableEnd="@drawable/katsuna_color_profile_2"
+                android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                android:padding="16dp" />
+
+            <RadioButton
+                android:id="@+id/profile_contrast_impairement"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableEnd="@drawable/katsuna_color_profile_3"
+                android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                android:padding="16dp" />
+
+            <RadioButton
+                android:id="@+id/profile_contrast"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableEnd="@drawable/katsuna_color_profile_4"
+                android:drawableStart="?android:attr/listChoiceIndicatorSingle"
+                android:padding="16dp" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Katsuna dimens -->
+    <dimen name="settings_side_padding">16dp</dimen>
+    <dimen name="settings_list_padding">16dp</dimen>
+    <dimen name="settings_label_margin_start">52dp</dimen>
+    <dimen name="settings_controls_margin">16dp</dimen>
+    <dimen name="qsetting_text_size">16sp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="ads_margin">4dp</dimen>
+    <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="delete_button_container_margin">64dp</dimen>
+</resources>

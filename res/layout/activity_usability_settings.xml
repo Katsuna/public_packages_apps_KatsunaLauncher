@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scroll_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_grey50"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:id="@+id/settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/common_grey50">
+
+            <TextView
+                android:id="@+id/text_usability_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/settings_list_padding"
+                android:text="@string/common_usability_settings" />
+
+            <include
+                android:id="@+id/age_setting"
+                layout="@layout/katsuna_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_usability_settings" />
+
+
+            <include
+                android:id="@+id/gender_setting"
+                layout="@layout/katsuna_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/age_setting" />
+
+            <include
+                android:id="@+id/hand_setting"
+                layout="@layout/katsuna_hand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gender_setting" />
+
+
+            <include
+                android:id="@+id/size_setting"
+                layout="@layout/katsuna_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hand_setting" />
+
+            <include
+                android:id="@+id/color_setting"
+                layout="@layout/katsuna_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/size_setting" />
+
+            <FrameLayout
+                android:id="@+id/translucent_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/common_black07"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</FrameLayout>
+
+

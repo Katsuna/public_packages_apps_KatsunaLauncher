@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.katsuna.launcher.katsuna.settings.AgeSetting xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/age_setting"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/settings_list_padding">
+
+    <include layout="@layout/katsuna_age_rh" />
+
+
+</com.katsuna.launcher.katsuna.settings.AgeSetting>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/size_initial_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.katsuna.commons.controls.KatsunaImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_format_size_grey600_24dp"
+            tools:ignore="ContentDescription" />
+
+        <com.katsuna.commons.controls.KatsunaTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/settings_label_margin_start"
+            android:text="@string/common_size"
+            app:sizeProfileKey="SUBHEADER" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/size_expanded_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/settings_label_margin_start"
+        android:layout_marginTop="@dimen/settings_controls_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.katsuna.commons.controls.KatsunaTextView
+            android:id="@+id/text_ithaka"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/common_ithaca"
+            app:sizeProfileKey="TITLE" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/text_ithaka_full"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="26dp"
+                android:gravity="center"
+                android:text="@string/common_ithaca_full_short"
+                app:sizeProfileKey="BODY_1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom|end">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end">
+
+                    <View
+                        android:id="@+id/commom_size_sample_fab"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/common_circle_black"
+                        android:elevation="10dp" />
+
+                    <TextView
+                        android:id="@+id/commom_size_sample_fab_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:elevation="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/common_size_selector"
+                        android:textColor="@android:color/white" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <RadioGroup
+            android:id="@+id/radio_group_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_size_advanced"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center"
+                android:text="@string/common_size_selector"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radio_size_intermediate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center"
+                android:text="@string/common_size_selector"
+                android:textSize="20sp" />
+
+            <RadioButton
+                android:id="@+id/radio_size_simple"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorSingle"
+                android:gravity="center"
+                android:text="@string/common_size_selector"
+                android:textSize="26sp" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</LinearLayout>

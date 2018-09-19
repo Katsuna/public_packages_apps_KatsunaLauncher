@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
+import com.katsuna.commons.utils.LetterNormalizer;
 import com.katsuna.launcher.compat.UserManagerCompat;
 import com.katsuna.launcher.config.FeatureFlags;
 import com.katsuna.launcher.util.ComponentKey;
@@ -117,4 +118,29 @@ public class AppInfo extends ItemInfoWithIcon {
             info.runtimeStatusFlags |= FLAG_ADAPTIVE_ICON;
         }
     }
+
+    private Integer launchCount = 0;
+
+    private String startLetter = "";
+
+    public Integer getLaunchCount() {
+        return launchCount;
+    }
+
+    public void setLaunchCount(Integer launchCount) {
+        this.launchCount = launchCount;
+    }
+
+    public String getStartLetter() {
+        return startLetter;
+    }
+
+    public void setStartLetter(String startLetter) {
+        this.startLetter = startLetter;
+    }
+
+    public String getStartLetterNormalized() {
+        return LetterNormalizer.normalize(title.toString());
+    }
+
 }

@@ -43,6 +43,14 @@
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
+    <permission
+        android:name="com.katsuna.services.datastore.permission.launcher_accesses"
+        android:label="Permission for reading and writing launcher accesses"
+        android:protectionLevel="signatureOrSystem" />
+    <permission
+        android:name="com.katsuna.services.datastore.permission.preferences"
+        android:label="Permission for reading and writing preferences"
+        android:protectionLevel="signatureOrSystem" />
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
@@ -86,6 +94,52 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".katsuna.activities.SetupActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".katsuna.activities.InfoActivity"
+            android:label="@string/common_app_info"
+            android:parentActivityName=".katsuna.activities.SetupActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".katsuna.activities.AdsActivity"
+            android:label="@string/suggested_apps"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".katsuna.activities.FakeLauncherActivity"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".katsuna.UsabilitySettingsActivity"
+            android:theme="@style/CommonAppTheme"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
         <!--
         The settings activity. When extending keep the intent filter present
         -->
@@ -111,6 +165,22 @@
             android:exported="true"
             android:writePermission="com.katsuna.launcher.permission.WRITE_SETTINGS"
             android:readPermission="com.katsuna.launcher.permission.READ_SETTINGS" />
+
+        <provider
+            android:name="com.katsuna.services.datastore.providers.LauncherProvider"
+            android:authorities="com.katsuna.services.datastore.providers.LauncherProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="com.katsuna.services.datastore.permission.launcher_accesses" />
+
+        <provider
+            android:name="com.katsuna.services.datastore.providers.PreferenceProvider"
+            android:authorities="com.katsuna.services.datastore.providers.PreferenceProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="com.katsuna.services.datastore.permission.preferences" />
 
     </application>
 </manifest>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/hand_initial_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.katsuna.commons.controls.KatsunaImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_dualpan_tool_grey600_24px"
+            tools:ignore="ContentDescription" />
+
+        <com.katsuna.commons.controls.KatsunaTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/settings_label_margin_start"
+            android:text="@string/common_hand"
+            app:sizeProfileKey="SUBHEADER" />
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/hand_expanded_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/settings_label_margin_start"
+        android:layout_marginTop="@dimen/settings_controls_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/radio_right_hand"
+            style="@style/settings_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_rightpan_tool_grey600_24px"
+            android:text="@string/common_hand_right"
+            android:textAlignment="textStart" />
+
+        <RadioButton
+            android:id="@+id/radio_left_hand"
+            style="@style/settings_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_leftpan_tool_grey600_24px"
+            android:text="@string/common_hand_left"
+            android:textAlignment="textStart" />
+
+    </RadioGroup>
+
+
+</LinearLayout>

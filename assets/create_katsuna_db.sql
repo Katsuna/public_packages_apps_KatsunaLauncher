@@ -1,0 +1,13 @@
+CREATE TABLE launcher_access(
+	_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+	component TEXT NOT NULL,
+	user TEXT NOT NULL,
+	time TEXT NOT NULL
+);
+
+CREATE TABLE preference(
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT NOT NULL,
+    value TEXT NOT NULL,
+    descr TEXT
+);
