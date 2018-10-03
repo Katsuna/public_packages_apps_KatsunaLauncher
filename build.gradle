@@ -4,8 +4,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha12'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
     }
 }
 
@@ -19,11 +19,17 @@ allprojects {
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
+// Load keystore
+def keystorePropertiesFile = rootProject.file("../../../vendor/keys/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
 // Define versions in a single place
 ext {
     // Sdk and tools
     compileSdkVersion = 28
-    buildToolsVersion = '28.0.2'
+    buildToolsVersion = '28.0.3'
 
     minSdkVersion = 24
     targetSdkVersion = 28
@@ -39,15 +45,35 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 22
+        versionName "3.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.ext.set("archivesBaseName", "KatsunaLauncher-" + defaultConfig.versionName)
+
         vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        katsunaConfig {
+            storeFile rootProject.file("../../../vendor/keys/katsuna.keystore")
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
+        }
+
+        release {
+            signingConfig signingConfigs.katsunaConfig
+
+            lintOptions {
+                checkReleaseBuilds false
+            }
         }
     }
 
@@ -75,13 +101,6 @@ android {
             dimension "default"
             applicationId 'com.katsuna.launcher'
             testApplicationId 'com.katsuna.launcher.tests'
-        }
-    }
-
-    // Disable release builds for now
-    android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
         }
     }
 
@@ -147,6 +166,7 @@ dependencies {
     implementation "com.android.support:cardview-v7:$supportLibraryVersion"
     implementation "com.android.support:support-v13:$supportLibraryVersion"
     implementation 'com.facebook.android:audience-network-sdk:4.26.1'
+    implementation 'konifar:fab-transformation:1.0.0'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
