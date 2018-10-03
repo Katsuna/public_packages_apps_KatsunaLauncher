@@ -130,15 +130,8 @@
 
         <activity android:name=".katsuna.UsabilitySettingsActivity"
             android:theme="@style/CommonAppTheme"
-            android:launchMode="singleTop">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
         <!--
         The settings activity. When extending keep the intent filter present
