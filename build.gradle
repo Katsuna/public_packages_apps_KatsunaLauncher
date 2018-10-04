@@ -120,6 +120,10 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
 
+        release {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
