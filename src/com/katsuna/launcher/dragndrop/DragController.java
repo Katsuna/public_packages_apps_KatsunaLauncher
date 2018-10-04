@@ -178,8 +178,10 @@ public class DragController implements DragDriver.EventListener, TouchController
             mDragObject.yOffset = b.getHeight() / 2;
             mDragObject.accessibleDrag = true;
         } else {
-            mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
-            mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+            // fix to adjust drop preview on workspace
+            mDragObject.xOffset = b.getWidth() / 2;
+            mDragObject.yOffset = b.getHeight() / 2;
+
             mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
 
             mDragDriver = DragDriver.create(mLauncher, this, mDragObject, mOptions);
