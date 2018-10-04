@@ -57,6 +57,9 @@ import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
@@ -67,17 +70,34 @@ import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.katsuna.commons.entities.KatsunaApp;
+import com.katsuna.commons.entities.LauncherAccess;
+import com.katsuna.commons.entities.UserProfile;
+import com.katsuna.commons.profile.Adjuster;
+import com.katsuna.commons.ui.adapters.LettersAdapter;
+import com.katsuna.commons.ui.adapters.interfaces.LetterListener;
+import com.katsuna.commons.utils.Constants;
+import com.katsuna.commons.utils.DeviceUtils;
+import com.katsuna.commons.utils.KatsunaUtils;
+import com.katsuna.commons.utils.LauncherAccessReader;
+import com.katsuna.commons.utils.ProfileReader;
 import com.katsuna.launcher.DropTarget.DragObject;
 import com.katsuna.launcher.Workspace.ItemOperator;
 import com.katsuna.launcher.accessibility.LauncherAccessibilityDelegate;
 import com.katsuna.launcher.allapps.AllAppsContainerView;
 import com.katsuna.launcher.allapps.AllAppsTransitionController;
+import com.katsuna.launcher.allapps.AlphabeticalAppsList;
 import com.katsuna.launcher.allapps.DiscoveryBounce;
 import com.katsuna.launcher.badge.BadgeInfo;
 import com.katsuna.launcher.compat.AppWidgetManagerCompat;
@@ -88,6 +108,11 @@ import com.katsuna.launcher.dragndrop.DragLayer;
 import com.katsuna.launcher.dragndrop.DragView;
 import com.katsuna.launcher.folder.FolderIcon;
 import com.katsuna.launcher.folder.FolderIconPreviewVerifier;
+import com.katsuna.launcher.katsuna.AppInteraction;
+import com.katsuna.launcher.katsuna.IntentKeyCalculator;
+import com.katsuna.launcher.katsuna.LaunchLogInfo;
+import com.katsuna.launcher.katsuna.activities.AdsActivity;
+import com.katsuna.launcher.katsuna.interfaces.LauncherStatsProvider;
 import com.katsuna.launcher.keyboard.CustomActionsPopup;
 import com.katsuna.launcher.keyboard.ViewGroupFocusHelper;
 import com.katsuna.launcher.logging.FileLog;
@@ -131,11 +156,14 @@ import com.katsuna.launcher.widget.WidgetHostViewLoader;
 import com.katsuna.launcher.widget.WidgetListRowEntry;
 import com.katsuna.launcher.widget.WidgetsFullSheet;
 import com.katsuna.launcher.widget.custom.CustomWidgetParser;
+import com.konifar.fab_transformation.FabTransformation;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -144,7 +172,8 @@ import java.util.Set;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate{
+        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        LetterListener, LauncherStatsProvider {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -334,6 +363,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         setContentView(mLauncherView);
         getRootView().dispatchInsets();
+
+        initDeselectionActionHandler();
+        initPopupActionHandler();
+        initKatsunaControls();
+        // initialize user profile variables
+        mUserProfileChanged = true;
+        mUserProfile = null;
 
         // Listen for broadcasts
         registerReceiver(mScreenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -768,11 +804,36 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
+    public boolean suggestionOpened = false;
+
     @Override
     protected void onResume() {
+        showPopup(false);
+        if (suggestionOpened) {
+            // reload apps
+            mAppsView.refreshApps();
+            suggestionOpened = false;
+        }
+
+
         TraceHelper.beginSection("ON_RESUME");
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
+
+        setUserProfile();
+        if (mUserProfileChanged) {
+            mAppsView.invalidateApps();
+
+            mAdjuster = new Adjuster(this, getUserProfile());
+            mAdjuster.adjustFabSize(mFab1, mFab2);
+            mAdjuster.adjustSearchBar(mViewPagerContainer, mPrevButton, mNextButton);
+            mAdjuster.adjustRightHand(mButtonsContainer1, mFab1, mPopupButton1);
+            mAdjuster.adjustRightHand(mButtonsContainer2, mFab2, mPopupButton2);
+            mAdjuster.adjustPopupButtons(mPopupButton1, mPopupButton2);
+            mAdjuster.adjustSearchBarForRightHand(mFabToolbarContainer, mFabToolbar);
+            // color profile adjustments
+            mAdjuster.adjustFabColors(mFab1, mFab2);
+        }
 
         mHandler.removeCallbacks(mLogOnDelayedResume);
         Utilities.postAsyncCallback(mHandler, mLogOnDelayedResume);
@@ -792,6 +853,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         UiFactory.onLauncherStateOrResumeChanged(this);
 
         TraceHelper.endSection("ON_RESUME");
+
+        //refresh usage stats
+        getUsageStatistics();
+        refreshLastTouchTimestamp();
     }
 
     @Override
@@ -1238,6 +1303,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
                     mStateManager.goToState(NORMAL);
+                    mAppsView.hidePopupMoreOptions();
                 }
 
                 // Reset the apps view
@@ -1586,6 +1652,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onBackPressed() {
+        if (mDeleteModeOn) {
+            enableDeleteMode(false);
+            return;
+        } else if (mFabToolbarOn) {
+            showFabToolbar(false);
+            return;
+        } else if (mItemSelected) {
+            if (mAppsView != null) {
+                mAppsView.deselectAppsGroup();
+                return;
+            }
+        }
+
         if (finishAutoCancelActionMode()) {
             return;
         }
@@ -1675,6 +1754,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             btv.setStayPressed(true);
             setOnResumeCallback(btv);
         }
+
+        if (success) {
+            logLaunchToKatsunaProvider(new LaunchLogInfo(v, intent, v.getTag()));
+        }
+
         return success;
     }
 
@@ -2421,4 +2505,393 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         void onLauncherResume();
     }
+
+    @Override
+    public void selectItemByStartingLetter(String s) {
+        mAppsView.selectItemByStartingLetter(s);
+    }
+
+    private UserProfile mUserProfile;
+    private boolean mUserProfileChanged;
+
+    @Override
+    public UserProfile getUserProfile() {
+        if (mUserProfile == null) {
+            setUserProfile();
+        }
+
+        return mUserProfile;
+    }
+
+    private void setUserProfile() {
+        UserProfile freshUserProfile = ProfileReader.getKatsunaUserProfile(this)
+                .getProfileFromKatsunaServices();
+        if (mUserProfile == null || !mUserProfile.equals(freshUserProfile)) {
+            mUserProfileChanged = true;
+        } else {
+            mUserProfileChanged = false;
+        }
+
+        if (mUserProfileChanged) {
+            mUserProfile = freshUserProfile;
+        }
+    }
+
+    private HashMap<String, Integer> mLauncherStats;
+    @Override
+    public HashMap<String, Integer> getLauncherStats() {
+        return mLauncherStats;
+    }
+
+    public void getUsageStatistics() {
+        try {
+            mLauncherStats = LauncherAccessReader.getLauncherStatsPerApp(this);
+
+            /* Enable for debug only.
+            for (String launchStat : mLauncherStats.keySet()) {
+                Log.d(TAG, " launchStat="  + launchStat + " count=" + mLauncherStats.get(launchStat));
+            }
+            */
+
+        } catch (Exception ex) {
+            Log.e(TAG, "unable to read launcher stats: " + ex);
+        }
+    }
+
+    // deselection mechanism
+    private Handler mDeselectionActionHandler;
+    private boolean mItemSelected;
+    private long mLastSelectionTimestamp = System.currentTimeMillis();
+
+    private void initDeselectionActionHandler() {
+        mDeselectionActionHandler = new Handler();
+        mDeselectionActionHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                if (now - Constants.SELECTION_THRESHOLD > mLastSelectionTimestamp && mItemSelected) {
+                    mAppsView.deselectAppsGroup();
+                }
+                mDeselectionActionHandler.postDelayed(this, Constants.HANDLER_DELAY);
+            }
+        }, Constants.HANDLER_DELAY);
+    }
+
+    public boolean selectItem() {
+        if (mFabToolbarOn) {
+            // cancel selection process
+            showFabToolbar(false);
+        }
+
+        if (mDeleteModeOn) {
+            enableDeleteMode(false);
+        }
+
+        mItemSelected = true;
+        mLastSelectionTimestamp = System.currentTimeMillis();
+
+        tintFabs(true);
+        adjustFabPosition(false);
+        return true;
+    }
+
+    public void deselectItem() {
+        mItemSelected = false;
+
+        tintFabs(false);
+        adjustFabPosition(true);
+        refreshLastTouchTimestamp();
+    }
+
+    // fab stuff
+    private FloatingActionButton mFab1;
+    private Button mPopupButton1;
+    private FrameLayout mPopupFrame;
+    private LinearLayout mFabContainer;
+    private boolean mFabToolbarOn;
+    private View mFabToolbarContainer;
+    private View mFabToolbar;
+    private View mViewPagerContainer;
+    protected RecyclerView mLettersList;
+    private ImageButton mPrevButton;
+    private ImageButton mNextButton;
+    private FloatingActionButton mFab2;
+    private LinearLayout mButtonsContainer1;
+    private LinearLayout mButtonsContainer2;
+    private Button mPopupButton2;
+    private boolean mDeleteModeOn;
+    private Adjuster mAdjuster;
+
+    private void initKatsunaControls() {
+        mFab1 = findViewById(R.id.search_fab);
+        mFab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFabToolbar(true);
+            }
+        });
+
+        mFab2 = findViewById(R.id.more_apps_fab);
+        mFab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Launcher.this, AdsActivity.class));
+            }
+        });
+
+        mPopupButton1 = findViewById(R.id.search_button);
+        mPopupButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFabToolbar(true);
+            }
+        });
+
+        mPopupButton2 = findViewById(R.id.more_apps_button);
+        mPopupButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Launcher.this, AdsActivity.class));
+            }
+        });
+
+        refreshLastTouchTimestamp();
+        mPopupFrame = findViewById(R.id.popup_frame);
+        mPopupFrame.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                showPopup(false);
+                return true;
+            }
+        });
+
+        mFabContainer = findViewById(R.id.fab_container);
+        mButtonsContainer1 = findViewById(R.id.search_buttons_container);
+        mButtonsContainer2 = findViewById(R.id.more_apps_container);
+        mFabToolbarContainer = findViewById(R.id.fab_toolbar_container);
+        showAppSuggestionFab();
+
+        mFabToolbar =  findViewById(R.id.fab_toolbar);
+        mViewPagerContainer = findViewById(R.id.viewpager_container);
+        mLettersList = findViewById(R.id.letters_list);
+
+        mNextButton = findViewById(R.id.next_page_button);
+        mNextButton.setOnTouchListener(new View.OnTouchListener() {
+            private Handler mHandler;
+
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (mHandler != null) return true;
+                        mHandler = new Handler();
+                        mHandler.postDelayed(mAction, 10);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mHandler == null) return true;
+                        mHandler.removeCallbacks(mAction);
+                        mHandler = null;
+                        break;
+                }
+                return false;
+            }
+
+            Runnable mAction = new Runnable() {
+                @Override public void run() {
+                    mLettersList.scrollBy(0, 30);
+                    mHandler.postDelayed(this, 10);
+                }
+            };
+        });
+
+        mPrevButton = findViewById(R.id.prev_page_button);
+        mPrevButton.setOnTouchListener(new View.OnTouchListener() {
+            private Handler mHandler;
+
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (mHandler != null) return true;
+                        mHandler = new Handler();
+                        mHandler.postDelayed(mAction, 10);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mHandler == null) return true;
+                        mHandler.removeCallbacks(mAction);
+                        mHandler = null;
+                        break;
+                }
+                return false;
+            }
+
+            Runnable mAction = new Runnable() {
+                @Override public void run() {
+                    mLettersList.scrollBy(0, -30);
+                    mHandler.postDelayed(this, 10);
+                }
+            };
+        });
+    }
+
+    private void showAppSuggestionFab() {
+        if (getSuggestedKatsunaApps().size() > 0) {
+            mButtonsContainer2.setVisibility(View.VISIBLE);
+        } else {
+            mButtonsContainer2.setVisibility(View.GONE);
+        }
+    }
+
+    private List<KatsunaApp> getSuggestedKatsunaApps() {
+        List<KatsunaApp> output = new ArrayList<>();
+        List<KatsunaApp> katsunaApps = KatsunaUtils.getKatsunaApps(this);
+        for (KatsunaApp app : katsunaApps) {
+            if (!DeviceUtils.isPackageInstalled(this, app.packageName)) {
+                output.add(app);
+            }
+        }
+        return output;
+    }
+
+    public void showFabToolbar(boolean show) {
+        if (show) {
+            FabTransformation.with(mFab1).duration(Constants.FAB_TRANSFORMATION_DURATION)
+                    .transformTo(mFabToolbar);
+
+            if (mPopupVisible) {
+                showPopup(false);
+            }
+            if (mDeleteModeOn) {
+                enableDeleteMode(false);
+            }
+            if (mItemSelected) {
+                mAppsView.deselectAppsGroup();
+            }
+            mAppsView.clearFocusFromSearch();
+
+            mFab2.hide();
+        } else {
+            FabTransformation.with(mFab1).duration(Constants.FAB_TRANSFORMATION_DURATION)
+                    .transformFrom(mFabToolbar);
+            mAppsView.unfocusFromSearch();
+            mFab2.show();
+        }
+        mFabToolbarOn = show;
+    }
+
+    public void loadFabToolbar(List<AlphabeticalAppsList.AdapterItem> models) {
+        List<String> letters = new ArrayList<>();
+
+        for (AlphabeticalAppsList.AdapterItem adapterItem: models) {
+            String letter = adapterItem.getStartLetterNormalized();
+            if (!letter.isEmpty() && !letters.contains(letter)) {
+                letters.add(letter);
+            }
+        }
+
+        Collections.sort(letters);
+
+        LettersAdapter mLettersAdapter = new LettersAdapter(letters, this);
+        mLettersList.setAdapter(mLettersAdapter);
+        mLettersList.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private long mLastTouchTimestamp;
+    private Handler mPopupActionHandler;
+    private boolean mPopupVisible;
+
+    private void initPopupActionHandler() {
+        mPopupActionHandler = new Handler();
+        mPopupActionHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                if (now - Constants.POPUP_INACTIVITY_THRESHOLD > mLastTouchTimestamp) {
+                    refreshLastTouchTimestamp();
+                    showPopup(!mPopupVisible);
+                }
+                mPopupActionHandler.postDelayed(this, Constants.HANDLER_DELAY);
+            }
+        }, Constants.HANDLER_DELAY);
+    }
+
+    private void showPopup(boolean show) {
+        if (show) {
+            if (!mItemSelected
+                    && isAppsViewVisible()
+                    && !mDeleteModeOn
+                    && !mFabToolbarOn) {
+                mPopupFrame.setVisibility(View.VISIBLE);
+                mPopupButton1.setVisibility(View.VISIBLE);
+                mPopupButton2.setVisibility(View.VISIBLE);
+                mPopupVisible = true;
+            }
+        } else {
+            mPopupFrame.setVisibility(View.GONE);
+            mPopupButton1.setVisibility(View.GONE);
+            mPopupButton2.setVisibility(View.GONE);
+            mPopupVisible = false;
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        refreshLastTouchTimestamp();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void refreshLastTouchTimestamp() {
+        mLastTouchTimestamp = System.currentTimeMillis();
+    }
+
+    private void adjustFabPosition(boolean verticalCenter) {
+        mAdjuster.adjustFabPosition(mFabContainer, verticalCenter);
+    }
+
+    private void tintFabs(boolean flag) {
+        mAdjuster.tintFabs(mFab1, mFab2, flag);
+    }
+
+    public void enableDeleteMode(boolean flag) {
+        if (mAppsView == null) return;
+
+        if (flag) {
+            if (mFabToolbarOn) {
+                showFabToolbar(!flag);
+            }
+            mFabContainer.setVisibility(View.GONE);
+            mFabToolbarContainer.setVisibility(View.GONE);
+        } else {
+            mFabContainer.setVisibility(View.VISIBLE);
+            mFabToolbarContainer.setVisibility(View.VISIBLE);
+            tintFabs(flag);
+            adjustFabPosition(!flag);
+        }
+
+        mDeleteModeOn = flag;
+        mAppsView.enableDeleteMode(flag);
+    }
+
+    public boolean isAppsViewVisible() {
+        return getStateManager().getState() == LauncherState.ALL_APPS;
+    }
+
+    private void logLaunchToKatsunaProvider(LaunchLogInfo launchLogInfo) {
+        new AsyncTask<LaunchLogInfo, Void, Void>() {
+            public Void doInBackground(LaunchLogInfo ... args) {
+                LaunchLogInfo logInfo = args[0];
+                if (logInfo.getIntent().getComponent() != null) {
+                    LauncherAccess lAccess = new LauncherAccess();
+
+                    String component = logInfo.getIntent().getComponent().flattenToShortString();
+                    String user = IntentKeyCalculator.getIntentKey(logInfo.getIntent());
+
+                    lAccess.setComponent(component);
+                    // keep user profile info
+                    lAccess.setUser(user);
+                    LauncherAccessReader.save(Launcher.this, lAccess);
+                }
+                return null;
+            }
+        }.execute(launchLogInfo);
+    }
+
 }

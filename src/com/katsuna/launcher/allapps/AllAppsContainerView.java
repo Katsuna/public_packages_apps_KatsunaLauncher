@@ -17,10 +17,16 @@ package com.katsuna.launcher.allapps;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Process;
 import android.support.animation.DynamicAnimation;
 import android.support.annotation.NonNull;
@@ -31,12 +37,20 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
+import com.katsuna.commons.KatsunaIntents;
+import com.katsuna.commons.entities.UserProfile;
+import com.katsuna.commons.utils.KatsunaAlertBuilder;
+import com.katsuna.commons.utils.KatsunaUtils;
 import com.katsuna.launcher.AppInfo;
 import com.katsuna.launcher.DeviceProfile;
 import com.katsuna.launcher.DeviceProfile.OnDeviceProfileChangeListener;
@@ -49,7 +63,11 @@ import com.katsuna.launcher.Launcher;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.Utilities;
 import com.katsuna.launcher.config.FeatureFlags;
+import com.katsuna.launcher.katsuna.AppInteraction;
+import com.katsuna.launcher.katsuna.AppsGroupsPopulator;
+import com.katsuna.launcher.katsuna.UsabilitySettingsActivity;
 import com.katsuna.launcher.keyboard.FocusedItemDecorator;
+import com.katsuna.launcher.model.KatsunaAppComparator;
 import com.katsuna.launcher.userevent.nano.LauncherLogProto.Target;
 import com.katsuna.launcher.util.ItemInfoMatcher;
 import com.katsuna.launcher.util.Themes;
@@ -57,12 +75,20 @@ import com.katsuna.launcher.views.BottomUserEducationView;
 import com.katsuna.launcher.views.RecyclerViewFastScroller;
 import com.katsuna.launcher.views.SpringRelativeLayout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 /**
  * The all apps view container.
  */
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
-        Insettable, OnDeviceProfileChangeListener {
+        Insettable, OnDeviceProfileChangeListener,
+        AppInteraction {
 
+    private static final String TAG = "AllAppsContainerView";
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
     // Starts the springs after at least 55% of the animation has passed.
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
@@ -107,8 +133,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Selection.setSelection(mSearchQueryBuilder, 0);
 
         mAH = new AdapterHolder[2];
-        mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
-        mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
+        mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */, this);
+        mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */, this);
 
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
@@ -154,12 +180,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             }
             rebindAdapters(hasWorkApps);
         }
+        sortApps();
     }
+
+    // set to true to disable swipe when apps drawer is not scrolled down.
+    private boolean mSwipeOverride = true;
 
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
     public boolean shouldContainerScroll(MotionEvent ev) {
+        if (mSwipeOverride) return false;
+
         // IF the MotionEvent is inside the search box, and the container keeps on receiving
         // touch input, container should move down.
         if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
@@ -255,6 +287,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initialize(this);
+
+        mMoreOptions = findViewById(R.id.more_options);
+        mMoreOptions.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayPopupWindow(mMoreOptions);
+            }
+        });
     }
 
     public SearchUiManager getSearchUiManager() {
@@ -277,29 +317,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void setInsets(Rect insets) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
-                + grid.cellLayoutPaddingLeftRightPx;
+        int valueInPixels = (int) getResources().getDimension(R.dimen.all_apps_bottom_inset);
+
 
         for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.bottom = insets.bottom;
-            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
+            mAH[i].padding.bottom = valueInPixels;
             mAH[i].applyPadding();
         }
 
-        ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        if (grid.isVerticalBarLayout()) {
-            mlp.leftMargin = insets.left;
-            mlp.rightMargin = insets.right;
-            setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
-        } else {
-            mlp.leftMargin = mlp.rightMargin = 0;
-            setPadding(0, 0, 0, 0);
-        }
-        setLayoutParams(mlp);
-
-        mNavBarScrimHeight = insets.bottom;
-        InsettableFrameLayout.dispatchInsets(this, insets);
+        mNavBarScrimHeight = valueInPixels;
     }
 
     @Override
@@ -415,6 +441,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void setLastSearchQuery(String query) {
+        mLauncher.showFabToolbar(false);
+
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }
@@ -490,6 +518,78 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         });
     }
 
+    @Override
+    public void selectAppsGroup(int position) {
+        if (mLauncher.selectItem()) {
+            AllAppsGridAdapter adapter = getMainAdapter();
+            adapter.setSelectedAppsGroup(position);
+            scrollToPositionWithOffset(position, 0);
+        }
+    }
+
+    @Override
+    public void deselectAppsGroup() {
+        AllAppsGridAdapter adapter = getMainAdapter();
+        adapter.setSelectedAppsGroup(AllAppsGridAdapter.NO_APPS_GROUP_POSITION);
+        invalidateApps();
+        mLauncher.deselectItem();
+    }
+
+    @Override
+    public UserProfile getUserProfile() {
+        return mLauncher.getUserProfile();
+    }
+
+    @Override
+    public void uninstall(String packageName) {
+        try {
+            Context context = getContext();
+            // Search for system apps with this packageName.
+            ApplicationInfo app = context.getPackageManager()
+                    .getApplicationInfo(packageName, 0);
+
+            if (isUserApp(app)) {
+                // Not a system app. We can try uninstalling it.
+                Uri packageUri = Uri.parse("package:" + packageName);
+                Intent i = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                context.startActivity(i);
+
+                mLauncher.getUsageStatistics();
+                sortApps();
+            } else {
+                KatsunaAlertBuilder builder = new KatsunaAlertBuilder(context);
+                String title = context.getResources().getString(R.string.common_warning);
+                builder.setTitle(title);
+                String message = context.getResources().getString(R.string.common_system_app_uninstall_error);
+                builder.setMessage(message);
+                builder.setView(R.layout.common_katsuna_alert);
+                builder.setUserProfile(getUserProfile());
+                builder.setCancelHidden(true);
+                builder.create().show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    private boolean isUserApp(ApplicationInfo ai) {
+        int mask = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
+        return (ai.flags & mask) == 0;
+    }
+
+    public void enableDeleteMode(boolean flag) {
+        AllAppsGridAdapter adapter = getMainAdapter();
+        adapter.enableDeleteMode(flag);
+        invalidateApps();
+    }
+
+    private void scrollToPositionWithOffset(int position, int offset) {
+        AllAppsRecyclerView rv = mAH[AdapterHolder.MAIN].recyclerView;
+        LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
+
+        lm.scrollToPositionWithOffset(position, offset);
+    }
+
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;
@@ -501,9 +601,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
-        AdapterHolder(boolean isWork) {
+        AdapterHolder(boolean isWork, AppInteraction appInteraction) {
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
-            adapter = new AllAppsGridAdapter(mLauncher, appsList);
+            adapter = new AllAppsGridAdapter(mLauncher, appsList, appInteraction);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }
@@ -537,4 +637,131 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     && verticalFadingEdge);
         }
     }
+
+    private AllAppsGridAdapter getMainAdapter() {
+        return mAH[AdapterHolder.MAIN].adapter;
+    }
+
+    private void sortApps() {
+        //sort apps by launch count
+        AlphabeticalAppsList appsList = getApps();
+
+        List<AppInfo> topApps = new ArrayList<>();
+        for (AppInfo appInfo : appsList.getApps()) {
+            topApps.add(new AppInfo(appInfo));
+        }
+        Collections.sort(topApps, new KatsunaAppComparator(getContext()).getAppInfoComparator());
+
+        mLauncher.loadFabToolbar(appsList.getAdapterItems());
+    }
+
+    public void selectItemByStartingLetter(String letter) {
+        AllAppsGridAdapter adapter = getMainAdapter();
+        if (adapter != null) {
+            mLauncher.deselectItem();
+            int position = adapter.getPositionByStartingLetter(letter);
+            selectAppsGroup(position);
+        }
+    }
+
+    public void clearFocusFromSearch() {
+        if (mSearchUiManager != null) {
+            mSearchUiManager.resetSearch();
+        }
+    }
+
+    public void unfocusFromSearch() {
+        AllAppsGridAdapter adapter = getMainAdapter();
+        adapter.deselectAppsGroup();
+    }
+
+    public void invalidateApps() {
+        AllAppsGridAdapter adapter = getMainAdapter();
+        adapter.invalidate();
+    }
+
+    public void refreshApps() {
+        AlphabeticalAppsList appsList = getApps();
+        appsList.refreshApps();
+    }
+
+    private PopupWindow mPopupMoreOptions;
+    private View mMoreOptions;
+
+    private void displayPopupWindow(View anchorView) {
+        LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        if (inflater == null) return;
+
+        mPopupMoreOptions = new PopupWindow(this);
+
+        mPopupMoreOptions.setWidth(WRAP_CONTENT);
+        mPopupMoreOptions.setHeight(WRAP_CONTENT);
+
+        View layout = inflater.inflate(R.layout.apps_actions_menu, null);
+
+        TextView settings = layout.findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (KatsunaUtils.katsunaOsDetected()) {
+                    Intent i = new Intent(KatsunaIntents.SETTINGS);
+                    getContext().startActivity(i);
+                } else {
+                    Intent i = new Intent(getContext(), UsabilitySettingsActivity.class);
+                    getContext().startActivity(i);
+                }
+
+                mPopupMoreOptions.dismiss();
+            }
+        });
+
+        TextView deleteCallsItem = layout.findViewById(R.id.delete_apps_menu_item);
+        deleteCallsItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLauncher.enableDeleteMode(true);
+                mPopupMoreOptions.dismiss();
+            }
+        });
+
+        mPopupMoreOptions.setContentView(layout);
+
+        // Closes the popup window when touch outside of it - when looses focus
+        mPopupMoreOptions.setOutsideTouchable(true);
+        mPopupMoreOptions.setFocusable(true);
+        mPopupMoreOptions.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        int margin4 = getResources().getDimensionPixelSize(R.dimen.common_4dp);
+        int margin56 = getResources().getDimensionPixelSize(R.dimen.common_56dp);
+
+        mPopupMoreOptions.showAtLocation(anchorView, Gravity.TOP | Gravity.END, margin4, margin56);
+    }
+
+    public void hidePopupMoreOptions() {
+        if (mPopupMoreOptions != null) {
+            mPopupMoreOptions.dismiss();
+        }
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == View.VISIBLE) {
+            // refresh usage stats
+            mLauncher.getUsageStatistics();
+
+            // load apps list with latest usage
+            List<AppInfo> appInfos = getApps().getApps();
+            AppsGroupsPopulator pp = new AppsGroupsPopulator(getContext(), mLauncher, appInfos);
+            pp.calcLauncCounts();
+
+            // reload apps
+            refreshApps();
+            sortApps();
+        }
+    }
+
 }

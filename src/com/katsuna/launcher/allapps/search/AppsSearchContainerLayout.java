@@ -15,14 +15,8 @@
  */
 package com.katsuna.launcher.allapps.search;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.getSize;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
-import static com.katsuna.launcher.graphics.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -30,12 +24,8 @@ import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup.MarginLayoutParams;
 
-import com.katsuna.launcher.DeviceProfile;
 import com.katsuna.launcher.ExtendedEditText;
-import com.katsuna.launcher.Insettable;
 import com.katsuna.launcher.Launcher;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.allapps.AllAppsContainerView;
@@ -52,7 +42,7 @@ import java.util.ArrayList;
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
-        AllAppsStore.OnUpdateListener, Insettable {
+        AllAppsStore.OnUpdateListener {
 
 
     private final Launcher mLauncher;
@@ -106,35 +96,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mLauncher.getAppsView().getAppsStore().removeUpdateListener(this);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Update the width to match the grid padding
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        int myRequestedWidth = getSize(widthMeasureSpec);
-        int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
-                - mAppsView.getActiveRecyclerView().getPaddingRight();
-
-        int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
-        int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
-        int iconPadding = cellWidth - iconVisibleSize;
-
-        int myWidth = rowWidth - iconPadding + getPaddingLeft() + getPaddingRight();
-        super.onMeasure(makeMeasureSpec(myWidth, EXACTLY), heightMeasureSpec);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        // Shift the widget horizontally so that its centered in the parent (b/63428078)
-        View parent = (View) getParent();
-        int availableWidth = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight();
-        int myWidth = right - left;
-        int expectedLeft = parent.getPaddingLeft() + (availableWidth - myWidth) / 2;
-        int shift = expectedLeft - left;
-        setTranslationX(shift);
     }
 
     @Override
@@ -200,18 +161,4 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mAppsView.onSearchResultsChanged();
     }
 
-    @Override
-    public void setInsets(Rect insets) {
-        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
-        requestLayout();
-
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        if (dp.isVerticalBarLayout()) {
-            mLauncher.getAllAppsController().setScrollRangeDelta(0);
-        } else {
-            mLauncher.getAllAppsController().setScrollRangeDelta(
-                    insets.bottom + mlp.topMargin + mFixedTranslationY);
-        }
-    }
 }

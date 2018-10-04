@@ -30,9 +30,16 @@
 
     <include layout="@layout/all_apps_floating_header" />
 
+    <include layout="@layout/katsuna_toolbar" />
+
     <include
         android:id="@id/search_container_all_apps"
         layout="@layout/search_container_all_apps"/>
 
     <include layout="@layout/all_apps_fast_scroller" />
+
+    <include layout="@layout/katsuna_popup_frame" />
+
+    <include layout="@layout/katsuna_all_apps_fabs" />
+
 </com.katsuna.launcher.allapps.AllAppsContainerView>

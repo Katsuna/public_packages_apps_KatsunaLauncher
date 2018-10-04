@@ -23,6 +23,7 @@ public class AppsGroupViewHolder extends AllAppsGridAdapter.ViewHolder {
     private final AppInteraction mAppInteraction;
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
+    private final int mIconLongPressTimeout;
     private final RecyclerView mAppsList;
     private final TextView mStartLetter;
     private final ImageView mStarIcon;
@@ -33,7 +34,9 @@ public class AppsGroupViewHolder extends AllAppsGridAdapter.ViewHolder {
     private final View mOpacityLayer;
 
     public AppsGroupViewHolder(View itemView, AppInteraction appInteraction,
-                               View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
+                               View.OnClickListener iconClickListener,
+                               View.OnLongClickListener iconLongClickListener,
+                               int longPressTimeout) {
         super(itemView);
         mAppInteraction = appInteraction;
         mStarIcon = itemView.findViewById(R.id.star_icon);
@@ -42,6 +45,7 @@ public class AppsGroupViewHolder extends AllAppsGridAdapter.ViewHolder {
         mAppsList = itemView.findViewById(R.id.apps_list);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
+        mIconLongPressTimeout = longPressTimeout;
 
         mStarContainer = itemView.findViewById(R.id.star_container);
         mAppsGroupContainerCard = itemView.findViewById(R.id.apps_group_container_card);
@@ -78,7 +82,7 @@ public class AppsGroupViewHolder extends AllAppsGridAdapter.ViewHolder {
         });
 
         AppsAdapter adapter = new AppsAdapter(appsGroup, mAppInteraction, mIconClickListener,
-                mIconLongClickListener, deleteMode, focused);
+                mIconLongClickListener, mIconLongPressTimeout,deleteMode, focused);
         mAppsList.setAdapter(adapter);
 
         adjustState(appsGroup, focused, focusModeOn);

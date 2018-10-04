@@ -76,6 +76,7 @@ public class AppInfo extends ItemInfoWithIcon {
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
+        launchCount = new Integer(info.getLaunchCount().intValue());
     }
 
     @Override

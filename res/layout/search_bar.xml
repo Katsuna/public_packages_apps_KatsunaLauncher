@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fab_toolbar_container"
+    android:layout_width="@dimen/common_search_bar_width"
+    android:layout_height="match_parent"
+    android:layout_gravity="end">
+
+    <FrameLayout
+        android:id="@+id/fab_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:id="@+id/viewpager_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/prev_page_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:padding="16dp"
+                android:src="@drawable/common_prev_button" />
+
+            <ImageButton
+                android:id="@+id/next_page_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:padding="16dp"
+                android:src="@drawable/common_next_button" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/letters_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/next_page_button"
+                android:layout_below="@id/prev_page_button"
+                android:scrollbars="vertical" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</io.codetail.widget.RevealFrameLayout>

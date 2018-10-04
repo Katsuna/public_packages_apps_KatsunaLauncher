@@ -40,7 +40,6 @@ public class AppViewHolder extends AllAppsGridAdapter.ViewHolder {
         adjustProfile(appsGroup, focused);
 
         mIcon.applyFromApplicationInfo(appInfo);
-        //mIcon.setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mAppCardContainer.getLayoutParams();
         if (deleteMode) {
@@ -77,7 +76,7 @@ public class AppViewHolder extends AllAppsGridAdapter.ViewHolder {
                             .getDimensionPixelSize(R.dimen.common_contact_photo_size_simple);
                     break;
             }
-            //mIcon.setIconSize(mIconSize);
+            mIcon.setIconSize(mIconSize);
 
             // app name
             OpticalParams opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.TITLE,

@@ -64,11 +64,11 @@ public class AppsGroupsPopulator {
         return appsGroup;
     }
 
-    private void calcLauncCounts() {
+    public void calcLauncCounts() {
         HashMap<String, Integer> launchCountMap = mLauncherStatsProvider.getLauncherStats();
         if (launchCountMap != null) {
             for (AppInfo app : mAppInfos) {
-                String key = IntentKeyCalculator.getIntentKey(app.getIntent());
+                String key = app.getIntent().getComponent().flattenToShortString();
                 if (launchCountMap.containsKey(key)) {
                     app.setLaunchCount(launchCountMap.get(key));
                 } else {
@@ -90,9 +90,6 @@ public class AppsGroupsPopulator {
             }
             appsFound++;
             output.add(appInfo);
-            if (appsFound == 3) {
-                break;
-            }
         }
 
         Collections.sort(output, new Comparator<AppInfo>(){
@@ -103,7 +100,12 @@ public class AppsGroupsPopulator {
             }
         });
 
-        return output;
+        int topItemsToShow = 3;
+        if (output.size() < topItemsToShow) {
+            topItemsToShow = output.size();
+        }
+
+        return output.subList(0, topItemsToShow);
     }
 
     private boolean isSettingsApp(AppInfo appInfo) {

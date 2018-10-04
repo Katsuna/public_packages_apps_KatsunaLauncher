@@ -18,10 +18,13 @@ package com.katsuna.launcher.allapps;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.katsuna.commons.utils.LetterNormalizer;
 import com.katsuna.launcher.AppInfo;
 import com.katsuna.launcher.Launcher;
 import com.katsuna.launcher.Utilities;
 import com.katsuna.launcher.compat.AlphabeticIndexCompat;
+import com.katsuna.launcher.katsuna.AppsGroup;
+import com.katsuna.launcher.katsuna.AppsGroupsPopulator;
 import com.katsuna.launcher.shortcuts.DeepShortcutManager;
 import com.katsuna.launcher.util.ComponentKey;
 import com.katsuna.launcher.util.ItemInfoMatcher;
@@ -124,6 +127,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
             item.position = pos;
             return item;
+        }
+
+        public String getStartLetterNormalized() {
+            String output = "";
+            if (appInfo != null) {
+                output = LetterNormalizer.normalize(appInfo.title.toString());
+            }
+            return output;
         }
     }
 
@@ -405,6 +416,17 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         if (shouldShowWorkFooter()) {
             mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
         }
+
+        // calculate app groups
+        AppsGroupsPopulator appsGroupsPopulator = new AppsGroupsPopulator(mLauncher, mLauncher,
+                getFiltersAppInfos());
+        mAppsGroups = appsGroupsPopulator.populate(hasFilter());
+
+        // Refresh the recycler view
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private boolean shouldShowWorkFooter() {
@@ -439,6 +461,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             mCachedSectionNames.put(title, sectionName);
         }
         return sectionName;
+    }
+
+    private List<AppsGroup> mAppsGroups;
+
+    public List<AppsGroup> getAppsGroups() {
+        return mAppsGroups;
+    }
+
+    public void refreshApps() {
+        onAppsUpdated();
     }
 
 }

@@ -21,18 +21,21 @@ public class AppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final AppInteraction mAppInteraction;
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
+    private final int mIconLongPressTimeout;
     private final boolean mDeleteMode;
     private final AppsGroup mAppsGroup;
     private final boolean mFocused;
 
     public AppsAdapter(AppsGroup appsGroup, AppInteraction appInteraction,
-                       View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener,
-                       boolean deleteMode, boolean focused) {
+                       View.OnClickListener iconClickListener,
+                       View.OnLongClickListener iconLongClickListener,
+                       int longPressTimeout, boolean deleteMode, boolean focused) {
         mAppsGroup = appsGroup;
         mApps = appsGroup.apps;
         mAppInteraction = appInteraction;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
+        mIconLongPressTimeout = longPressTimeout;
         mDeleteMode = deleteMode;
         mFocused = focused;
     }
@@ -43,12 +46,11 @@ public class AppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.app_info, parent, false);
 
         AppViewHolder vh = new AppViewHolder(viewGroup, mAppInteraction);
-/*        BubbleTextView icon = vh.mContent.findViewById(R.id.icon);
+        BubbleTextView icon = vh.mContent.findViewById(R.id.icon);
         icon.setOnClickListener(mIconClickListener);
         icon.setOnLongClickListener(mIconLongClickListener);
-        icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
-                .getLongPressTimeout());
-        icon.setFocusable(true);*/
+        icon.setLongPressTimeout(mIconLongPressTimeout);
+        icon.setFocusable(true);
         return vh;
     }
 

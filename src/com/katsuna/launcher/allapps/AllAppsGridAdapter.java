@@ -38,6 +38,9 @@ import com.katsuna.launcher.Launcher;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.allapps.AlphabeticalAppsList.AdapterItem;
 import com.katsuna.launcher.compat.UserManagerCompat;
+import com.katsuna.launcher.katsuna.AppInteraction;
+import com.katsuna.launcher.katsuna.AppsGroup;
+import com.katsuna.launcher.katsuna.viewholders.AppsGroupViewHolder;
 import com.katsuna.launcher.touch.ItemClickHandler;
 import com.katsuna.launcher.touch.ItemLongClickListener;
 import com.katsuna.launcher.util.PackageManagerHelper;
@@ -79,8 +82,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View mContent;
+
         public ViewHolder(View v) {
             super(v);
+            mContent = v;
         }
     }
 
@@ -164,12 +170,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getSpanSize(int position) {
-            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
-                return 1;
-            } else {
-                // Section breaks span the full width
-                return mAppsPerRow;
-            }
+            return 1;
         }
     }
 
@@ -184,12 +185,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private BindViewCallback mBindViewCallback;
     private OnFocusChangeListener mIconFocusListener;
 
+    public static final int NO_APPS_GROUP_POSITION = -1;
+    private int mSelectedAppsGroupPosition = NO_APPS_GROUP_POSITION;
+    private boolean mDeleteMode;
+    private AppInteraction mAppInteraction;
+
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps) {
+    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps,
+                              AppInteraction appInteraction) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -199,8 +206,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mLayoutInflater = LayoutInflater.from(launcher);
 
-        mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
+        mAppsPerRow = 1;
+        // mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
+
+        mAppInteraction = appInteraction;
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -245,78 +255,26 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_ICON:
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(ItemClickHandler.INSTANCE);
-                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
-                icon.setOnFocusChangeListener(mIconFocusListener);
+        ViewGroup container = (ViewGroup) mLayoutInflater.inflate(R.layout.apps_group,
+                parent, false);
 
-                // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
-                return new ViewHolder(icon);
-            case VIEW_TYPE_EMPTY_SEARCH:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
-                        parent, false));
-            case VIEW_TYPE_SEARCH_MARKET:
-                View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
-                        parent, false);
-                searchMarketView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
-                    }
-                });
-                return new ViewHolder(searchMarketView);
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
-                return new ViewHolder(footer);
-            default:
-                throw new RuntimeException("Unexpected view type");
-        }
+        return new AppsGroupViewHolder(container, mAppInteraction, ItemClickHandler.INSTANCE,
+                ItemLongClickListener.INSTANCE_ALL_APPS, ViewConfiguration.getLongPressTimeout());
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
-            case VIEW_TYPE_ICON:
-                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.itemView;
-                icon.reset();
-                icon.applyFromApplicationInfo(info);
-                break;
-            case VIEW_TYPE_EMPTY_SEARCH:
-                TextView emptyViewText = (TextView) holder.itemView;
-                emptyViewText.setText(mEmptySearchMessage);
-                emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
-                        Gravity.START | Gravity.CENTER_VERTICAL);
-                break;
-            case VIEW_TYPE_SEARCH_MARKET:
-                TextView searchView = (TextView) holder.itemView;
-                if (mMarketSearchIntent != null) {
-                    searchView.setVisibility(View.VISIBLE);
-                } else {
-                    searchView.setVisibility(View.GONE);
-                }
-                break;
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
-                // nothing to do
-                break;
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
-                workModeToggle.refresh();
-                TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
-                boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
-                        managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
-                managedByLabel.setText(anyProfileQuietModeEnabled
-                        ? R.string.work_mode_off_label : R.string.work_mode_on_label);
-                break;
-        }
+        // Apps Groups binding
+        final AppsGroup model = mApps.getAppsGroups().get(position);
+
+        boolean focused = mSelectedAppsGroupPosition == position;
+        boolean focusModeOn = mSelectedAppsGroupPosition != NO_APPS_GROUP_POSITION;
+
+        AppsGroupViewHolder vh = (AppsGroupViewHolder) holder;
+        vh.bind(model, position, focused, focusModeOn, mDeleteMode);
+
+
+
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);
         }
@@ -330,13 +288,44 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     @Override
     public int getItemCount() {
-        return mApps.getAdapterItems().size();
+        return mApps.getAppsGroups().size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
-        return item.viewType;
+    public void setSelectedAppsGroup(int position) {
+        mSelectedAppsGroupPosition = position;
+        notifyDataSetChanged();
     }
+
+    public void invalidate() {
+        notifyDataSetChanged();
+        setSelectedAppsGroup(NO_APPS_GROUP_POSITION);
+    }
+
+    public int getPositionByStartingLetter(String letter) {
+        int position = NO_APPS_GROUP_POSITION;
+
+        for(int i = 0; i < mApps.getAppsGroups().size(); i++) {
+            AppsGroup appsGroup = mApps.getAppsGroups().get(i);
+            if(appsGroup.firstLetter != null &&
+                    appsGroup.firstLetter.startsWith(letter)) {
+                position = i;
+                break;
+            }
+        }
+
+        return position;
+    }
+
+    public void deselectAppsGroup() {
+        int prevFocused = mSelectedAppsGroupPosition;
+        mSelectedAppsGroupPosition = NO_APPS_GROUP_POSITION;
+        notifyItemChanged(prevFocused);
+    }
+
+    public void enableDeleteMode(boolean flag) {
+        mDeleteMode = flag;
+        notifyDataSetChanged();
+    }
+
 
 }

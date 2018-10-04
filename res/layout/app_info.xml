@@ -42,20 +42,9 @@
             launcher:cardCornerRadius="8dp"
             launcher:cardElevation="0dp">
 
-            <com.katsuna.launcher.BubbleTextView
+            <include
                 android:id="@+id/icon"
-                style="@style/Icon.AllApps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/focusable_view_bg"
-                android:focusable="true"
-                launcher:iconDisplay="all_apps"
-                launcher:layoutHorizontal="true" />
+                layout="@layout/katsuna_app_icon" />
 
         </android.support.v7.widget.CardView>
 

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/search_container_all_apps"
+    android:layout_marginTop="26dp"
+    android:layout_marginBottom="@dimen/all_apps_bottom_inset">
+
+    <LinearLayout
+        android:id="@+id/fab_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|end"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/search_buttons_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/common_search"
+                android:textAllCaps="false"
+                android:textColor="@color/common_black87"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/search_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_fab_margin"
+                android:src="@drawable/common_ic_search_black87_24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/more_apps_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/more_apps_button"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/suggested_apps"
+                android:textAllCaps="false"
+                android:textColor="@color/common_black87"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/more_apps_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_fab_margin"
+                android:src="@drawable/ic_more_apps_24dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/search_bar" />
+
+</FrameLayout>
