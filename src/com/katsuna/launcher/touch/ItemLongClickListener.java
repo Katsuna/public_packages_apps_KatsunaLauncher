@@ -100,6 +100,7 @@ public class ItemLongClickListener {
         DeviceProfile grid = launcher.getDeviceProfile();
         DragOptions options = new DragOptions();
         options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        options.isPopupEnabled = false;
         launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), options);
         return false;
     }

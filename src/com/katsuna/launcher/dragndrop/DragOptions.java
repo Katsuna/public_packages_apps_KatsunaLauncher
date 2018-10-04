@@ -37,6 +37,9 @@ public class DragOptions {
     /** Scale of the icons over the workspace icon size. */
     public float intrinsicIconScaleFactor = 1f;
 
+    /** Whether or not an accessible drag operation is in progress. */
+    public boolean isPopupEnabled = true;
+
     /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
      * By default, there is no condition and onDragStart() is called immediately following

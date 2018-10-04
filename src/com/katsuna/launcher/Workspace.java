@@ -1582,12 +1582,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag) {
-            PopupContainerWithArrow popupContainer = PopupContainerWithArrow
-                    .showForIcon((BubbleTextView) child);
-            if (popupContainer != null) {
-                dragOptions.preDragCondition = popupContainer.createPreDragCondition();
+            // katsuna comment: quick tap popup
+            if (dragOptions.isPopupEnabled) {
+                PopupContainerWithArrow popupContainer = PopupContainerWithArrow
+                        .showForIcon((BubbleTextView) child);
+                if (popupContainer != null) {
+                    dragOptions.preDragCondition = popupContainer.createPreDragCondition();
 
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("dragging started");
+                    mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("dragging started");
+                }
             }
         }
 
