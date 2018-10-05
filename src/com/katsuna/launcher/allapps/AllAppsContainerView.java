@@ -340,7 +340,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void rebindAdapters(boolean showTabs) {
-        rebindAdapters(false, false /* force */);
+        rebindAdapters(showTabs, false /* force */);
     }
 
     private void rebindAdapters(boolean showTabs, boolean force) {
