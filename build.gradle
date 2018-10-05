@@ -1,11 +1,17 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         google()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+        classpath 'com.google.gms:google-services:4.0.2' // google-services plugin
+        classpath 'io.fabric.tools:gradle:1.25.4'
+        classpath 'com.google.firebase:firebase-plugins:1.1.5'
     }
 }
 
@@ -17,7 +23,9 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.protobuf'
+apply plugin: 'io.fabric'
 
 // Load keystore
 def keystorePropertiesFile = rootProject.file("../../../vendor/keys/keystore.properties")
@@ -36,6 +44,9 @@ ext {
 
     // App dependencies
     supportLibraryVersion = '28.0.0'
+    firebaseVersion = '16.0.3'
+    firebasePerfVersion = '16.1.0'
+    crashlyticsVersion = '2.9.5'
 }
 
 android {
@@ -65,6 +76,9 @@ android {
 
     buildTypes {
         debug {
+            // Disable fabric build ID generation for debug builds
+            ext.enableCrashlytics = false
+
             minifyEnabled false
         }
 
@@ -116,14 +130,6 @@ android {
             assets.srcDirs = ['assets', 'assets']
         }
 
-        debug {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        release {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
@@ -136,6 +142,7 @@ android {
 
         aosp {
             java.srcDirs = ['src_flags', "src_ui_overrides"]
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {
@@ -171,6 +178,9 @@ dependencies {
     implementation "com.android.support:support-v13:$supportLibraryVersion"
     implementation 'com.facebook.android:audience-network-sdk:4.26.1'
     implementation 'konifar:fab-transformation:1.0.0'
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+    implementation "com.google.firebase:firebase-perf:$firebasePerfVersion"
+    implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
@@ -204,3 +214,5 @@ protobuf {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

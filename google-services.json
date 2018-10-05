@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "797169375150",
+    "firebase_url": "https://katsuna-launcher1.firebaseio.com",
+    "project_id": "katsuna-launcher1",
+    "storage_bucket": "katsuna-launcher1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797169375150:android:5e804f94bb26dd16",
+        "android_client_info": {
+          "package_name": "com.katsuna.launcher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797169375150-1huujmmv3m5t0he54on7ou5nc0etel40.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.katsuna.launcher",
+            "certificate_hash": "a4b16c796eb20f609379f32a8ae7a9b74a7f9947"
+          }
+        },
+        {
+          "client_id": "797169375150-9odeg89o2te6qc4j20dasbu1rj6kd584.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsHY551yfsZgxz2kI6mN_vwbxhRQSpZn4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797169375150-9odeg89o2te6qc4j20dasbu1rj6kd584.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797169375150:android:b389cb31f7c175cc",
+        "android_client_info": {
+          "package_name": "com.katsuna.launcher.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797169375150-9odeg89o2te6qc4j20dasbu1rj6kd584.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsHY551yfsZgxz2kI6mN_vwbxhRQSpZn4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
