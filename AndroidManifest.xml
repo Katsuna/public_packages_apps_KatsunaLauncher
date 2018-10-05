@@ -21,6 +21,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.katsuna.launcher">
     <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
+
+    <compatible-screens>
+        <!-- all normal size screens -->
+        <screen android:screenSize="normal" android:screenDensity="mdpi" /> <!-- 160 -->
+        <screen android:screenSize="normal" android:screenDensity="hdpi" /> <!-- 240 -->
+        <screen android:screenSize="normal" android:screenDensity="280" /> <!-- Workaround -->
+        <screen android:screenSize="normal" android:screenDensity="xhdpi" />  <!-- 320 -->
+        <screen android:screenSize="normal" android:screenDensity="360" /> <!-- Workaround -->
+        <screen android:screenSize="normal" android:screenDensity="420" /> <!-- Workaround Google Pixel, Nexus 5x -->
+        <screen android:screenSize="normal" android:screenDensity="xxhdpi" /> <!-- 480 -->
+        <screen android:screenSize="normal" android:screenDensity="560" /> <!-- Workaround Google Pixel XL, Nexus 6, Nexus 6P -->
+        <screen android:screenSize="normal" android:screenDensity="xxxhdpi" /> <!-- 640 -->
+    </compatible-screens>
+
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
