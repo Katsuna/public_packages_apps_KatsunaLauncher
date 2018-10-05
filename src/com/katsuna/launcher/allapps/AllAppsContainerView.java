@@ -16,6 +16,7 @@
 package com.katsuna.launcher.allapps;
 
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -540,6 +541,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mLauncher.getUserProfile();
     }
 
+    private AlertDialog mLatestDialog;
+
     @Override
     public void uninstall(String packageName) {
         try {
@@ -565,7 +568,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 builder.setView(R.layout.common_katsuna_alert);
                 builder.setUserProfile(getUserProfile());
                 builder.setCancelHidden(true);
-                builder.create().show();
+                mLatestDialog = builder.create();
+                mLatestDialog.show();
             }
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.toString());
@@ -761,7 +765,16 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             // reload apps
             refreshApps();
             sortApps();
+        } else {
+            hidePendingDialog();
         }
+    }
+
+    public void hidePendingDialog() {
+        if (mLatestDialog != null) {
+            mLatestDialog.dismiss();
+        }
+
     }
 
 }

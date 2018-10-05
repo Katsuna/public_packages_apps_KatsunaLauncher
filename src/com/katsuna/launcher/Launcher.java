@@ -1304,6 +1304,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     // animations running as part of resume
                     mStateManager.goToState(NORMAL);
                     mAppsView.hidePopupMoreOptions();
+                    mAppsView.hidePendingDialog();
                 }
 
                 // Reset the apps view
