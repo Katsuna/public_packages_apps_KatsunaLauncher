@@ -2,6 +2,7 @@ package com.katsuna.launcher.katsuna.settings;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -75,6 +76,8 @@ public class AgeSetting extends BaseSetting implements AlertUtils.Callback {
     }
 
     public void setAge(String age) {
+        if (TextUtils.isEmpty(age)) return;
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date date = dateFormat.parse(age);
@@ -123,8 +126,6 @@ public class AgeSetting extends BaseSetting implements AlertUtils.Callback {
         try {
             mDate = dateFormat.parse(getDateString());
         } catch (ParseException pe) {
-            Log.e(TAG, pe.toString());
-            mValidationError.setVisibility(View.VISIBLE);
             return false;
         }
 
