@@ -33,6 +33,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
@@ -89,6 +90,7 @@ import com.katsuna.commons.ui.adapters.LettersAdapter;
 import com.katsuna.commons.ui.adapters.interfaces.LetterListener;
 import com.katsuna.commons.utils.Constants;
 import com.katsuna.commons.utils.DeviceUtils;
+import com.katsuna.commons.utils.KatsunaAlertBuilder;
 import com.katsuna.commons.utils.KatsunaUtils;
 import com.katsuna.commons.utils.LauncherAccessReader;
 import com.katsuna.commons.utils.ProfileReader;
@@ -2860,6 +2862,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
             mFabContainer.setVisibility(View.GONE);
             mFabToolbarContainer.setVisibility(View.GONE);
+            warnThatSystemAppsCannotBeDeleted();
         } else {
             mFabContainer.setVisibility(View.VISIBLE);
             mFabToolbarContainer.setVisibility(View.VISIBLE);
@@ -2869,6 +2872,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mDeleteModeOn = flag;
         mAppsView.enableDeleteMode(flag);
+    }
+
+    private void warnThatSystemAppsCannotBeDeleted() {
+        KatsunaAlertBuilder builder = new KatsunaAlertBuilder(this);
+        String title = getResources().getString(R.string.common_warning);
+        builder.setTitle(title);
+        String message = getResources().getString(R.string.common_system_app_uninstall_error);
+        builder.setMessage(message);
+        builder.setView(R.layout.common_katsuna_alert);
+        builder.setUserProfile(getUserProfile());
+        builder.setCancelHidden(true);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public boolean isAppsViewVisible() {

@@ -545,40 +545,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void uninstall(String packageName) {
-        try {
-            Context context = getContext();
-            // Search for system apps with this packageName.
-            ApplicationInfo app = context.getPackageManager()
-                    .getApplicationInfo(packageName, 0);
+        Context context = getContext();
 
-            if (isUserApp(app)) {
-                // Not a system app. We can try uninstalling it.
-                Uri packageUri = Uri.parse("package:" + packageName);
-                Intent i = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
-                context.startActivity(i);
+        Uri packageUri = Uri.parse("package:" + packageName);
+        Intent i = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+        context.startActivity(i);
 
-                mLauncher.getUsageStatistics();
-                sortApps();
-            } else {
-                KatsunaAlertBuilder builder = new KatsunaAlertBuilder(context);
-                String title = context.getResources().getString(R.string.common_warning);
-                builder.setTitle(title);
-                String message = context.getResources().getString(R.string.common_system_app_uninstall_error);
-                builder.setMessage(message);
-                builder.setView(R.layout.common_katsuna_alert);
-                builder.setUserProfile(getUserProfile());
-                builder.setCancelHidden(true);
-                mLatestDialog = builder.create();
-                mLatestDialog.show();
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, e.toString());
-        }
-    }
-
-    private boolean isUserApp(ApplicationInfo ai) {
-        int mask = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
-        return (ai.flags & mask) == 0;
+        mLauncher.getUsageStatistics();
+        sortApps();
     }
 
     public void enableDeleteMode(boolean flag) {

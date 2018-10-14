@@ -17,6 +17,7 @@ import com.katsuna.launcher.R;
 import com.katsuna.launcher.allapps.AllAppsGridAdapter;
 import com.katsuna.launcher.katsuna.AppInteraction;
 import com.katsuna.launcher.katsuna.AppsGroup;
+import com.katsuna.launcher.katsuna.utils.AppInfoUtils;
 import com.katsuna.launcher.katsuna.utils.CardColors;
 import com.katsuna.launcher.katsuna.utils.CardColorsCalculator;
 
@@ -40,9 +41,12 @@ public class AppViewHolder extends AllAppsGridAdapter.ViewHolder {
         adjustProfile(appsGroup, focused);
 
         mIcon.applyFromApplicationInfo(appInfo);
+        AppInfoUtils appInfoUtils = AppInfoUtils.getInstance();
+        boolean appUninstallable = appInfoUtils.isUserApp(itemView.getContext(),
+                appInfo.componentName.getPackageName());
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mAppCardContainer.getLayoutParams();
-        if (deleteMode) {
+        if (deleteMode && appUninstallable) {
             int marginEnd = itemView.getContext().getResources()
                     .getDimensionPixelSize(R.dimen.delete_button_container_margin);
             params.setMarginEnd(marginEnd);
