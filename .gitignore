@@ -12,3 +12,4 @@ bin/
 .gradle/
 local.properties
 build/
+jenkins.properties
