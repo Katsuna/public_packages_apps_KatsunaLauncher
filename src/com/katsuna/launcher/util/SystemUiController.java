@@ -16,6 +16,7 @@
 
 package com.katsuna.launcher.util;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -80,6 +81,8 @@ public class SystemUiController {
         if (newFlags != oldFlags) {
             mWindow.getDecorView().setSystemUiVisibility(newFlags);
         }
+
+        mWindow.setNavigationBarColor(Color.BLACK);
     }
 
     @Override
