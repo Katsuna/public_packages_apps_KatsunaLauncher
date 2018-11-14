@@ -93,6 +93,16 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             mContent.setGridSize(idp.numHotseatIcons, 1);
         }
 
+        // bind all_apps_icon
+        View expandAppsIcon = findViewById(R.id.expand_apps);
+        expandAppsIcon.setOnClickListener(v -> {
+            if (!mLauncher.isInState(ALL_APPS)) {
+                mLauncher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                    ControlType.ALL_APPS_BUTTON);
+                mLauncher.getStateManager().goToState(ALL_APPS);
+            }
+        });
+
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             // Add the Apps button
             Context context = getContext();
@@ -162,13 +172,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
                 lp.gravity = Gravity.RIGHT;
                 lp.width = grid.hotseatBarSizePx + insets.right + grid.hotseatBarSidePaddingPx;
             }
-        } else {
-            lp.gravity = Gravity.BOTTOM;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = grid.hotseatBarSizePx + insets.bottom;
         }
-        Rect padding = grid.getHotseatLayoutPadding();
-        getLayout().setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);

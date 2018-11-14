@@ -29,6 +29,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.katsuna.launcher.config.FeatureFlags;
+import com.katsuna.launcher.katsuna.KatsunaConfig;
 import com.katsuna.launcher.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -204,7 +205,7 @@ public class InvariantDeviceProfile {
                             iconSize,
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
+                            KatsunaConfig.HOTSEAT_POSITIONS,
                             a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
                             a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
                     a.recycle();

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import com.katsuna.commons.utils.DpUtils;
 import com.katsuna.launcher.DeviceProfile;
 import com.katsuna.launcher.Insettable;
 import com.katsuna.launcher.Launcher;
@@ -268,7 +269,9 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         } else {
             lp.leftMargin = lp.rightMargin = 0;
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+            int marginBottom = (int) getResources()
+                .getDimension(R.dimen.workspace_indicator_margin_bottom);
+            lp.bottomMargin = grid.hotseatBarSizePx + DpUtils.dpToPx(marginBottom);
         }
         setLayoutParams(lp);
     }
