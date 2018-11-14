@@ -881,11 +881,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final CellLayout layout;
         if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             layout = mLauncher.getHotseat().getLayout();
-
-            // Hide folder title in the hotseat
-            if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(false);
-            }
         } else {
             // Show folder title if not in the hotseat
             if (child instanceof FolderIcon) {

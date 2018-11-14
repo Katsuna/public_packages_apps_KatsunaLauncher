@@ -551,7 +551,7 @@ public class DeviceProfile {
             case CellLayout.FOLDER:
                 return folderCellHeightPx;
             case CellLayout.HOTSEAT:
-                return hotseatCellHeightPx;
+                return cellHeightPx;
             default:
                 // ??
                 return 0;
