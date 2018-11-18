@@ -72,6 +72,7 @@
     <uses-permission android:name="com.katsuna.launcher.permission.WRITE_SETTINGS" />
 
     <application
+        android:name="com.katsuna.launcher.LauncherApplication"
         android:backupAgent="com.katsuna.launcher.LauncherBackupAgent"
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
@@ -124,6 +125,19 @@
             android:label="@string/common_app_info"
             android:parentActivityName=".katsuna.activities.SetupActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".katsuna.activities.WorkspaceActivity"
+            android:label="@string/workspace_activity"
+            android:theme="@style/Theme.Transparent"
+            android:parentActivityName=".katsuna.activities.SetupActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".katsuna.activities.AdsActivity"

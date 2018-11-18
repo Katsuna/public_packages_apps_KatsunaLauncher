@@ -16,4 +16,6 @@
     <string name="most_used_apps">Most used apps</string>
     <string name="delete_apps">Delete Apps</string>
     <string name="delete_app">Delete App</string>
+
+    <string name="workspace_activity">Activities</string>
 </resources>
