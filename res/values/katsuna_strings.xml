@@ -18,4 +18,7 @@
     <string name="delete_app">Delete App</string>
 
     <string name="workspace_activity">Activities</string>
+
+    <!-- open calendar button at workspace activity -->
+    <string name="open_calendar">Open Calendar</string>
 </resources>

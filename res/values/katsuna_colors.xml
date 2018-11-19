@@ -7,4 +7,6 @@
 
     <color name="workspace_activity_bg">#2e3138</color>
 
+    <color name="workspace_card_handler_bg">#5e636b</color>
+
 </resources>
