@@ -110,11 +110,12 @@ import com.katsuna.launcher.dragndrop.DragLayer;
 import com.katsuna.launcher.dragndrop.DragView;
 import com.katsuna.launcher.folder.FolderIcon;
 import com.katsuna.launcher.folder.FolderIconPreviewVerifier;
-import com.katsuna.launcher.katsuna.AppInteraction;
 import com.katsuna.launcher.katsuna.IntentKeyCalculator;
 import com.katsuna.launcher.katsuna.LaunchLogInfo;
 import com.katsuna.launcher.katsuna.activities.AdsActivity;
+import com.katsuna.launcher.katsuna.activities.WorkspaceActivity;
 import com.katsuna.launcher.katsuna.interfaces.LauncherStatsProvider;
+import com.katsuna.launcher.katsuna.utils.ProfileAdjuster;
 import com.katsuna.launcher.keyboard.CustomActionsPopup;
 import com.katsuna.launcher.keyboard.ViewGroupFocusHelper;
 import com.katsuna.launcher.logging.FileLog;
@@ -281,6 +282,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private final Handler mHandler = new Handler();
     private final Runnable mLogOnDelayedResume = this::logOnDelayedResume;
+    private Button mActivitiesButton;
+    private Button mSettingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -835,6 +838,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mAdjuster.adjustSearchBarForRightHand(mFabToolbarContainer, mFabToolbar);
             // color profile adjustments
             mAdjuster.adjustFabColors(mFab1, mFab2);
+            ProfileAdjuster.adjustHotSeatButtons(this, mActivitiesButton, mSettingsButton,
+                mUserProfile);
         }
 
         mHandler.removeCallbacks(mLogOnDelayedResume);
@@ -2733,6 +2738,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             };
         });
+
+        mActivitiesButton = findViewById(R.id.activities_button);
+        mActivitiesButton.setOnClickListener(v ->  {
+                Intent i = new Intent(this, WorkspaceActivity.class);
+                startActivity(i);
+            });
+
+        mSettingsButton = findViewById(R.id.settings_button);
+        mSettingsButton.setOnClickListener(v ->  {
+            Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                startActivity(i);
+            });
     }
 
     private void showAppSuggestionFab() {
