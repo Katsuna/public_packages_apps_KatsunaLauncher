@@ -52,7 +52,7 @@ public class MonthView extends LinearLayout {
             if (originalDayOfWeek == today.get(Calendar.DAY_OF_WEEK) && isCurrentMonth) {
                 textColor = ContextCompat.getColor(view.getContext(), R.color.common_white);
             } else {
-                textColor = ContextCompat.getColor(view.getContext(), R.color.common_white54);
+                textColor = ContextCompat.getColor(view.getContext(), R.color.common_white38);
             }
             textView.setTextColor(textColor);
         }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardBackgroundColor="@color/workspace_card_handler_bg"
+    app:cardCornerRadius="@dimen/border_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@color/workspace_activity_bg"
+        android:orientation="vertical">
+
+        <include layout="@layout/qs_layout" />
+
+        <include
+            layout="@layout/qs_expanded_layout"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

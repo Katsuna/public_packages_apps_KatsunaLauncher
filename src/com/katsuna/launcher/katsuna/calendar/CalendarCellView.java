@@ -9,12 +9,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.katsuna.commons.entities.ColorProfile;
 import com.katsuna.commons.entities.ColorProfileKeyV2;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.utils.ColorCalcV2;
 import com.katsuna.commons.utils.FontFamily;
-import com.katsuna.commons.utils.Shape;
 import com.katsuna.launcher.R;
+import com.katsuna.launcher.katsuna.utils.DrawUtils;
 
 public class CalendarCellView extends FrameLayout {
 
@@ -108,9 +109,12 @@ public class CalendarCellView extends FrameLayout {
         if (isToday) {
             int color = ColorCalcV2.getColor(ctx, ColorProfileKeyV2.PRIMARY_COLOR_1,
                 userProfile.colorProfile);
+            if (userProfile.colorProfile == ColorProfile.CONTRAST) {
+                color = ContextCompat.getColor(ctx, R.color.common_white);
+            }
 
             int circleSize = getResources().getDimensionPixelSize(R.dimen.common_36dp);
-            Drawable bg = Shape.getCircle(color, circleSize);
+            Drawable bg = DrawUtils.getCircle(color, circleSize);
 
             mBgView.setImageDrawable(bg);
             textColor = ContextCompat.getColor(ctx, R.color.common_black);

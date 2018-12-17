@@ -113,7 +113,7 @@ import com.katsuna.launcher.folder.FolderIconPreviewVerifier;
 import com.katsuna.launcher.katsuna.IntentKeyCalculator;
 import com.katsuna.launcher.katsuna.LaunchLogInfo;
 import com.katsuna.launcher.katsuna.activities.AdsActivity;
-import com.katsuna.launcher.katsuna.activities.WorkspaceActivity;
+import com.katsuna.launcher.katsuna.dashboard.ui.DashboardActivity;
 import com.katsuna.launcher.katsuna.interfaces.LauncherStatsProvider;
 import com.katsuna.launcher.katsuna.utils.ProfileAdjuster;
 import com.katsuna.launcher.keyboard.CustomActionsPopup;
@@ -2741,7 +2741,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mActivitiesButton = findViewById(R.id.activities_button);
         mActivitiesButton.setOnClickListener(v ->  {
-                Intent i = new Intent(this, WorkspaceActivity.class);
+                Intent i = new Intent(this, DashboardActivity.class);
                 startActivity(i);
             });
 

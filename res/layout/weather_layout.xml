@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/weather_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/workspace_card_handler_bg"
+    app:cardCornerRadius="@dimen/border_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@color/workspace_activity_bg"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <include layout="@layout/weather_permissions" />
+
+        <LinearLayout
+            android:id="@+id/weather_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/current_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:minHeight="24dp"
+                android:textColor="@color/common_white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <include layout="@layout/current_weather" />
+
+            <include layout="@layout/extended_weather" />
+
+        </LinearLayout>
+
+        <include layout="@layout/no_recent_weather" />
+
+        <include layout="@layout/no_weather" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,284 @@
+package com.katsuna.launcher.katsuna.dashboard;
+
+import android.location.Location;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+
+import com.katsuna.commons.utils.KatsunaUtils;
+import com.katsuna.launcher.katsuna.dashboard.data.LocationDataSource;
+import com.katsuna.launcher.katsuna.dashboard.data.WeatherDataSource;
+import com.katsuna.launcher.katsuna.dashboard.domain.Weather;
+import com.katsuna.launcher.katsuna.dashboard.tasks.LongTermWeatherTask;
+import com.katsuna.launcher.katsuna.dashboard.tasks.ShortTermWeatherTask;
+import com.katsuna.launcher.katsuna.dashboard.tasks.WeatherTask;
+import com.katsuna.launcher.katsuna.dashboard.utils.IDeviceUtils;
+import com.katsuna.launcher.katsuna.dashboard.utils.IPermissionUtils;
+import com.katsuna.launcher.katsuna.dashboard.utils.ISettingsController;
+
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import timber.log.Timber;
+
+import static com.katsuna.launcher.katsuna.WeatherConstants.LOCATION_PERMISSIONS;
+
+public class DashboardPresenter implements DashboardContract.Presenter {
+
+    private static final String TAG = DashboardPresenter.class.getSimpleName();
+
+    @NonNull
+    private final WeatherDataSource mWeatherDataSource;
+
+    @NonNull
+    private final DashboardContract.View mDashboardView;
+    private final IPermissionUtils mPermissionUtils;
+    private final LocationDataSource mLocationDataSource;
+    private final IDeviceUtils mDeviceUtils;
+    private final ISettingsController mSettingsController;
+    private Weather mTodayWeather;
+    private List<Weather> mShortTermWeather;
+    private List<Weather> mLongTermWeather;
+
+    public DashboardPresenter(@NonNull WeatherDataSource weatherDataSource,
+                              @NonNull DashboardContract.View weatherView,
+                              @NonNull IPermissionUtils permissionUtils,
+                              @NonNull LocationDataSource locationDataSource,
+                              @NonNull IDeviceUtils deviceUtils,
+                              @NonNull ISettingsController settingsController) {
+        mWeatherDataSource = weatherDataSource;
+        mDashboardView = weatherView;
+        mPermissionUtils = permissionUtils;
+        mLocationDataSource = locationDataSource;
+        mDeviceUtils = deviceUtils;
+        mSettingsController = settingsController;
+
+        mDashboardView.setPresenter(this);
+    }
+
+    @Override
+    public void loadData() {
+        loadSettings();
+        loadWeather();
+    }
+
+    private void loadSettings() {
+        // first write setting permissions must be granted
+        if (mSettingsController.canModifySystemSetting()) {
+            mDashboardView.setBrightnessLevel(mSettingsController.getBrightness());
+            mDashboardView.showBatteryLevel(mSettingsController.getBatterLevel());
+            mDashboardView.showWifiStatus(mSettingsController.isWifiEnabled());
+            mDashboardView.showDataStatus(mSettingsController.isDataEnabled());
+            mDashboardView.showDndStatus(mSettingsController.isDndModeOn());
+        } else {
+            mDashboardView.askPermissionToWriteSettings();
+        }
+    }
+
+    @Override
+    public void loadWeather() {
+        // then location permissions must be granted
+        boolean locationPermissionGranted = mPermissionUtils.hasPermissions(LOCATION_PERMISSIONS);
+        if (!locationPermissionGranted) {
+            mDashboardView.showMissingLocationPermissions(true);
+            mDashboardView.showWeather(false);
+            return;
+        } else {
+            mDashboardView.showMissingLocationPermissions(false);
+        }
+
+        mTodayWeather = mWeatherDataSource.getToday();
+        mShortTermWeather = mWeatherDataSource.getShortTerm();
+        mLongTermWeather = mWeatherDataSource.getLongTerm();
+
+        boolean noWeatherData = (mTodayWeather == null);
+        mDashboardView.showNoWeatherWarning(noWeatherData);
+
+        if (!noWeatherData) {
+            // show weather even if its old
+            mDashboardView.setCurrentWeather(mTodayWeather);
+            mDashboardView.setCurrentDate(calculateDate());
+            mDashboardView.showWeather(true);
+
+            // notify for old data
+            long lastUpdateMillis = mWeatherDataSource.getLastUpdate();
+            LocalDateTime lastUpdate = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastUpdateMillis),
+                DateTimeUtils.toZoneId(TimeZone.getDefault()));
+            LocalDateTime threeHoursAgo = LocalDateTime.now().minusHours(3);
+            boolean noRecentWeather = lastUpdate.isBefore(threeHoursAgo);
+            mDashboardView.showNoRecentWeatherWarning(noRecentWeather);
+        }
+    }
+
+    @Override
+    public void selectLongTermWeather() {
+        if (mLongTermWeather != null) {
+            mDashboardView.showLongTermWeather(mLongTermWeather);
+        }
+    }
+
+    @Override
+    public void selectShortTermWeather() {
+        if (mShortTermWeather != null) {
+            mDashboardView.showShortTermWeather(mShortTermWeather);
+        }
+    }
+
+    @Override
+    public void sync() {
+        if (!mDeviceUtils.isNetworkConnected()) {
+            mDashboardView.showNoInternetConnection();
+            return;
+        }
+
+        if (!mDeviceUtils.hasALocationProviderEnabled()) {
+            mDashboardView.showNoGpsProviderEnabled();
+            return;
+        }
+
+        mLocationDataSource.getLocation(new LocationDataSource.GetLocationCallback() {
+            @Override
+            public void onLocationFound(Location location) {
+                locationCurrentWeather(location);
+            }
+
+            @Override
+            public void missingPermission() {
+
+            }
+
+            @Override
+            public void requestTimedOut() {
+
+            }
+        });
+    }
+
+    @Override
+    public void openCalendarApp() {
+        String targetPackage = KatsunaUtils.KATSUNA_CALENDAR_PACKAGE;
+
+        if (mDeviceUtils.isAppInstalled(targetPackage)) {
+            mDeviceUtils.openApp(targetPackage);
+        } else {
+            mDashboardView.showCalendarAppInstallationDialog();
+        }
+    }
+
+    @Override
+    public void setBrightness(int level) {
+        mSettingsController.setBrightness(level);
+    }
+
+    @Override
+    public void loadVolume() {
+        int volume = mSettingsController.getVolume();
+        mDashboardView.setVolume(volume);
+    }
+
+    @Override
+    public void setVolume(int level) {
+        mSettingsController.setVolume(level);
+    }
+
+    @Override
+    public void setWifiStatus(boolean status) {
+        mSettingsController.setWifiEnabled(status);
+    }
+
+    @Override
+    public void setDndStatus(boolean status) {
+        mSettingsController.setDndMode(status);
+    }
+
+    @Override
+    public void expandDashboardView(DashboardViewType dashboardViewType) {
+        loadSettings();
+        switch (dashboardViewType) {
+            case SETTINGS:
+                mDashboardView.showExtendedCalendar(false);
+                expandFullWeather(false);
+                mDashboardView.showExtendedSettings(true);
+                break;
+            case CALENDAR:
+                mDashboardView.showExtendedSettings(false);
+                expandFullWeather(false);
+                mDashboardView.showExtendedCalendar(true);
+                break;
+            case WEATHER:
+                mDashboardView.showExtendedSettings(false);
+                mDashboardView.showExtendedCalendar(false);
+                expandFullWeather(true);
+                break;
+        }
+    }
+
+    private void expandFullWeather(boolean flag) {
+        mDashboardView.showDate(flag);
+        if (flag) {
+            mDashboardView.showShortTermWeather(mShortTermWeather);
+        }
+        mDashboardView.showExtendedWeather(flag);
+    }
+
+    private void locationCurrentWeather(Location location) {
+        Timber.tag(TAG).d("loading current weather for location %s", location);
+
+        new WeatherTask(null, location, mWeatherDataSource,
+            (response) -> {
+                if (response.allGood()) {
+                    Timber.tag(TAG).d("loading short term");
+                    loadShortTermWeather(location);
+                } else {
+                    mDashboardView.showSyncProblem();
+                    Timber.tag(TAG).e("Problem problems: %s", response.problems());
+                }
+            }
+        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void loadShortTermWeather(Location location) {
+        Timber.tag(TAG).d("loading short term weather for location %s", location);
+
+        new ShortTermWeatherTask(null, location, mWeatherDataSource, (response) -> {
+            if (response.allGood()) {
+                Timber.tag(TAG).d("loading long term");
+                loadLongTermWeather(location);
+            } else {
+                mDashboardView.showSyncProblem();
+                Timber.tag(TAG).e("Problem problems: %s", response.problems());
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void loadLongTermWeather(Location location) {
+        Timber.tag(TAG).d("loading long term weather for location %s", location);
+
+        new LongTermWeatherTask(null, location, mWeatherDataSource, (response) -> {
+            if (response.allGood()) {
+                loadWeather();
+            } else {
+                mDashboardView.showSyncProblem();
+                Timber.tag(TAG).e("Problem problems: %s", response.problems());
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    public void start() {
+    }
+
+    private String calculateDate() {
+        Format formatter = new SimpleDateFormat("EEEE, MMM dd", Locale.getDefault());
+        String date = formatter.format(new Date());
+        String location = mTodayWeather == null ? "" : mTodayWeather.getCity();
+        return String.format("%s | %s", location, date);
+    }
+}
