@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/current_weather_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -45,13 +46,14 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/current_weather_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:minHeight="28dp"
         android:textColor="@color/common_white"
-        android:textSize="14sp" />
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BODY_1" />
 
 </LinearLayout>

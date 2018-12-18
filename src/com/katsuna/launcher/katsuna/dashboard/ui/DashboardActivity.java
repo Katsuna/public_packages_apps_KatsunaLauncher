@@ -37,6 +37,7 @@ import com.katsuna.commons.utils.KatsunaAlertBuilder;
 import com.katsuna.commons.utils.KatsunaUtils;
 import com.katsuna.commons.utils.ProfileReader;
 import com.katsuna.commons.utils.SeekBarUtils;
+import com.katsuna.commons.utils.SizeAdjuster;
 import com.katsuna.commons.utils.ToggleButtonAdjuster;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.katsuna.calendar.CalendarCellDecorator;
@@ -666,6 +667,9 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
 
         adjustTextWarning(mInitWeatherLabel, mPrimaryColor1);
         adjustTextWarning(mRetrySyncLabel, mPrimaryColor1);
+
+        ViewGroup root = findViewById(android.R.id.content);
+        SizeAdjuster.applySizeProfileV2(this, root, mUserProfile.opticalSizeProfile);
     }
 
     private void adjustTextWarning(TextView tv, int color) {

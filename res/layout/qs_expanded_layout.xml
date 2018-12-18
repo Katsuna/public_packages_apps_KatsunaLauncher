@@ -8,15 +8,15 @@
     android:layout_margin="16dp"
     android:orientation="vertical">
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/brightness_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
         android:minHeight="19dp"
         android:text="@string/brightness"
         android:textColor="@color/common_white"
-        android:textSize="16sp" />
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <SeekBar
         android:id="@+id/brightness_seekbar"
@@ -27,17 +27,18 @@
         android:splitTrack="false"
         app:layout_constraintTop_toBottomOf="@id/brightness_label" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/sound_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-medium"
         android:minHeight="19dp"
         android:text="@string/sound"
         android:textColor="@color/common_white"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/brightness_seekbar" />
+        app:layout_constraintTop_toBottomOf="@id/brightness_seekbar"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <SeekBar
         android:id="@+id/sound_seekbar"
@@ -65,18 +66,19 @@
         app:layout_constraintTop_toBottomOf="@id/divider1"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/battery_ex_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:fontFamily="sans-serif-medium"
         android:minHeight="19dp"
         android:textColor="@color/common_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/battery_ex_icon"
         app:layout_constraintStart_toEndOf="@id/battery_ex_icon"
-        app:layout_constraintTop_toTopOf="@id/battery_ex_icon" />
+        app:layout_constraintTop_toTopOf="@id/battery_ex_icon"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <include
         android:id="@+id/divider2"
@@ -102,19 +104,20 @@
         app:layout_constraintTop_toTopOf="@id/wifi_toggle"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/wifi_ex_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:fontFamily="sans-serif-medium"
         android:minHeight="19dp"
         android:text="@string/wifi_title"
         android:textColor="@color/common_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/wifi_toggle"
         app:layout_constraintStart_toEndOf="@id/wifi_ex_icon"
-        app:layout_constraintTop_toTopOf="@id/wifi_toggle" />
+        app:layout_constraintTop_toTopOf="@id/wifi_toggle"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <include
         android:id="@+id/divider3"
@@ -133,19 +136,20 @@
         app:layout_constraintTop_toTopOf="@id/divider3"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/data_ex_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:fontFamily="sans-serif-medium"
         android:minHeight="19dp"
         android:text="@string/data_title"
         android:textColor="@color/common_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/data_ex_icon"
         app:layout_constraintStart_toEndOf="@id/data_ex_icon"
-        app:layout_constraintTop_toTopOf="@id/data_ex_icon" />
+        app:layout_constraintTop_toTopOf="@id/data_ex_icon"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <TextView
         android:id="@+id/data_ex_status"
@@ -157,7 +161,7 @@
         android:minHeight="19dp"
         android:text="@string/data_title"
         android:textColor="@color/common_white"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/data_ex_icon"
         app:layout_constraintEnd_toEndOf="@+id/wifi_toggle"
         app:layout_constraintStart_toStartOf="@id/wifi_toggle"
@@ -187,7 +191,7 @@
         app:layout_constraintTop_toTopOf="@id/dnd_toggle"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/dnd_ex_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -199,7 +203,9 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/dnd_toggle"
         app:layout_constraintStart_toEndOf="@id/dnd_ex_icon"
-        app:layout_constraintTop_toTopOf="@id/dnd_toggle" />
+        app:layout_constraintTop_toTopOf="@id/dnd_toggle"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="SUBHEADING_2" />
 
     <include
         android:id="@+id/divider5"
@@ -209,7 +215,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/dnd_toggle" />
 
-    <Button
+    <com.katsuna.commons.controls.KatsunaButton
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -224,8 +230,9 @@
         android:text="@string/open_settings"
         android:textAllCaps="false"
         android:textColor="@color/common_white"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider5" />
+        app:layout_constraintTop_toBottomOf="@id/divider5"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BUTTON" />
 
 </android.support.constraint.ConstraintLayout>

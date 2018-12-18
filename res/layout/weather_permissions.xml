@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/permission_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,14 +8,16 @@
     android:orientation="vertical"
     android:visibility="gone">
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:text="@string/no_permission_text"
-        android:textColor="@color/common_white" />
+        android:textColor="@color/common_white"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BODY_1" />
 
-    <Button
+    <com.katsuna.commons.controls.KatsunaButton
         android:id="@+id/permission_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,6 +30,8 @@
         android:text="@string/permission_button"
         android:textAllCaps="false"
         android:textColor="@color/common_white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BUTTON" />
 
 </LinearLayout>

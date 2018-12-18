@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/extended_weather_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
+    android:layout_marginStart="4dp"
     android:layout_marginTop="16dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="4dp"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -20,7 +21,7 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/select_day"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -29,9 +30,10 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:text="@string/day"
-            android:textSize="16sp" />
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/select_week"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +42,8 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:text="@string/week"
-            android:textSize="16sp" />
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
     </LinearLayout>
 
@@ -82,11 +85,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc1"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon1"
@@ -96,11 +101,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp1"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
         <LinearLayout
@@ -110,11 +117,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc2"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon2"
@@ -124,11 +133,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp2"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
         <LinearLayout
@@ -138,11 +149,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc3"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon3"
@@ -152,11 +165,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp3"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
         <LinearLayout
@@ -166,11 +181,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc4"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon4"
@@ -180,11 +197,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp4"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
         <LinearLayout
@@ -194,11 +213,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc5"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon5"
@@ -208,11 +229,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp5"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
         <LinearLayout
@@ -222,11 +245,13 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/desc6"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
 
             <ImageView
                 android:id="@+id/icon6"
@@ -236,11 +261,13 @@
                 android:layout_marginBottom="@dimen/weather_icon_margin"
                 android:contentDescription="@string/weather_icon" />
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/temp6"
                 style="@style/WeatherTemp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
         </LinearLayout>
 
     </LinearLayout>

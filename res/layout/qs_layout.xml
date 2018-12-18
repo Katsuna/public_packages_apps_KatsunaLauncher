@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/qs_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,12 +15,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/battery_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/battery_title"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
         <ImageView
             android:id="@+id/battery_icon"
@@ -28,12 +31,14 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_battery_80_white_42dp" />
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/battery_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
     </LinearLayout>
 
@@ -44,12 +49,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/wifi_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wifi_title"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
         <ImageView
             android:id="@+id/wifi_icon"
@@ -58,12 +65,14 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_signal_wifi_0_bar_white_42dp" />
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/wifi_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
     </LinearLayout>
 
@@ -74,12 +83,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/data_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/data_title"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
         <ImageView
             android:id="@+id/data_icon"
@@ -88,12 +99,14 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_signal_cellular_0_bar_white_42dp" />
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/data_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
     </LinearLayout>
 
@@ -104,12 +117,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/dnd_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/silent_title"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
         <ImageView
             android:id="@+id/dnd_icon"
@@ -118,12 +133,14 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_remove_circle_white_42dp" />
 
-        <TextView
+        <com.katsuna.commons.controls.KatsunaTextView
             android:id="@+id/dnd_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"
+            app:sizeProfileEnabled="true"
+            app:sizeProfileKeyV2="BUTTON" />
 
     </LinearLayout>
 

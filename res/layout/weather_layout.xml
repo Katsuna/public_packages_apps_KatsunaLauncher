@@ -26,7 +26,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <TextView
+            <com.katsuna.commons.controls.KatsunaTextView
                 android:id="@+id/current_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,7 +36,9 @@
                 android:minHeight="24dp"
                 android:textColor="@color/common_white"
                 android:textSize="14sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BODY_1" />
 
             <include layout="@layout/current_weather" />
 

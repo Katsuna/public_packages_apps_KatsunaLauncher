@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/no_recent_weather_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,7 +9,7 @@
     android:orientation="horizontal"
     android:visibility="gone">
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/sync_weather_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,9 +19,11 @@
         android:maxWidth="240dp"
         android:text="@string/no_recent_weather"
         android:textColor="@color/common_white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BODY_1" />
 
-    <TextView
+    <com.katsuna.commons.controls.KatsunaTextView
         android:id="@+id/retry_sync_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,6 +32,8 @@
         android:text="@string/pls_update"
         android:textAllCaps="false"
         android:textColor="@color/common_white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        app:sizeProfileEnabled="true"
+        app:sizeProfileKeyV2="BODY_1" />
 
 </LinearLayout>

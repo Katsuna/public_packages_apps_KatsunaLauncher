@@ -11,9 +11,13 @@ import android.widget.TextView;
 
 import com.katsuna.commons.entities.ColorProfile;
 import com.katsuna.commons.entities.ColorProfileKeyV2;
+import com.katsuna.commons.entities.OpticalParams;
+import com.katsuna.commons.entities.SizeProfileKeyV2;
 import com.katsuna.commons.entities.UserProfile;
 import com.katsuna.commons.utils.ColorCalcV2;
 import com.katsuna.commons.utils.FontFamily;
+import com.katsuna.commons.utils.SizeAdjuster;
+import com.katsuna.commons.utils.SizeCalcV2;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.katsuna.utils.DrawUtils;
 
@@ -104,6 +108,11 @@ public class CalendarCellView extends FrameLayout {
         }
 
         Context ctx = getContext();
+
+        OpticalParams opticalParams = SizeCalcV2.getOpticalParams(SizeProfileKeyV2.BUTTON,
+            userProfile.opticalSizeProfile);
+        SizeAdjuster.adjustText(ctx, dayOfMonthTextView, opticalParams);
+
 
         int textColor;
         if (isToday) {
