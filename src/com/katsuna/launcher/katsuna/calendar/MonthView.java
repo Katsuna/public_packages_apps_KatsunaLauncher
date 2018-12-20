@@ -38,7 +38,7 @@ public class MonthView extends LinearLayout {
         view.grid = view.findViewById(R.id.calendar_grid);
         view.setDayViewAdapter(adapter);
 
-        int firstDayOfWeek = today.getFirstDayOfWeek();
+        int firstDayOfWeek = 1; // for mondays
         final CalendarRowView headerRow = (CalendarRowView) view.grid.getChildAt(0);
 
         // show days name row
