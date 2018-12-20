@@ -84,23 +84,24 @@
         android:orientation="vertical">
 
         <com.katsuna.commons.controls.KatsunaTextView
-            android:id="@+id/data_label"
+            android:id="@+id/gps_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/data_title"
+            android:text="@string/gps_title"
+            android:textAllCaps="true"
             android:textColor="@color/common_white"
             app:sizeProfileEnabled="true"
             app:sizeProfileKeyV2="BUTTON" />
 
         <ImageView
-            android:id="@+id/data_icon"
+            android:id="@+id/gps_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_signal_cellular_0_bar_white_42dp" />
+            android:src="@drawable/ic_gps_off_white_42dp" />
 
         <com.katsuna.commons.controls.KatsunaTextView
-            android:id="@+id/data_status"
+            android:id="@+id/gps_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

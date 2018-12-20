@@ -98,7 +98,7 @@ public class DashboardPresenterTest {
         verify(mView).setBrightnessLevel(mSettingsController.getBrightness());
         verify(mView).showBatteryLevel(mSettingsController.getBatterLevel());
         verify(mView).showWifiStatus(mSettingsController.isWifiEnabled());
-        verify(mView).showDataStatus(mSettingsController.isDataEnabled());
+        verify(mView).showGpsStatus(mDeviceUtils.hasALocationProviderEnabled());
         verify(mView).showDndStatus(mSettingsController.isDndModeOn());
     }
 

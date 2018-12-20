@@ -60,6 +60,12 @@ public class DeviceUtils implements IDeviceUtils {
         return getLocationManager().isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+    @Override
+    public void setGpsProviderStatus() {
+        Intent i = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        mContext.startActivity(i);
+    }
+
     private LocationManager getLocationManager() {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);

@@ -50,7 +50,7 @@ public interface DashboardContract {
 
         void showWifiStatus(boolean status);
 
-        void showDataStatus(boolean status);
+        void showGpsStatus(boolean status);
 
         void showDndStatus(boolean status);
 
@@ -82,6 +82,8 @@ public interface DashboardContract {
         void setDndStatus(boolean status);
 
         void expandDashboardView(DashboardViewType dashboardViewType);
+
+        void setGpsProvider();
     }
 
 }

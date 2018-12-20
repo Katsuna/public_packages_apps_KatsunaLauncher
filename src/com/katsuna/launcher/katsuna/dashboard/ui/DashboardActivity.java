@@ -1,8 +1,6 @@
 package com.katsuna.launcher.katsuna.dashboard.ui;
 
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -103,7 +101,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     private View mSelectWeekUnderline;
     private TextView mBatteryLevel;
     private TextView mWifiStatus;
-    private TextView mDataStatus;
+    private TextView mGpsStatus;
     private TextView mDndStatus;
 
     private ViewGroup mCalendarWrapper;
@@ -127,9 +125,9 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     private TextView mInitWeatherLabel;
     private TextView mRetrySyncLabel;
     private TextView mBatteryExLevel;
-    private TextView mDataExStatus;
+    private TextView mGpsExStatus;
     private ImageView mWifiIcon;
-    private ImageView mDataIcon;
+    private ImageView mGpsIcon;
     private ImageView mDndIcon;
 
     @Override
@@ -268,9 +266,9 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         mBatteryLevel = findViewById(R.id.battery_status);
         mWifiStatus = findViewById(R.id.wifi_status);
         mWifiIcon = findViewById(R.id.wifi_icon);
-        mDataIcon = findViewById(R.id.data_icon);
+        mGpsIcon = findViewById(R.id.gps_icon);
         mDndIcon = findViewById(R.id.dnd_icon);
-        mDataStatus = findViewById(R.id.data_status);
+        mGpsStatus = findViewById(R.id.gps_status);
         mDndStatus = findViewById(R.id.dnd_status);
 
         mQsExpandedLayout = findViewById(R.id.qs_expanded_layout);
@@ -323,19 +321,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         mWifiToggle = findViewById(R.id.wifi_toggle);
         mWifiToggle.setOnCheckedChangeListener((buttonView, isChecked) ->
             mPresenter.setWifiStatus(isChecked));
-        mDataExStatus = findViewById(R.id.data_ex_status);
-        mDataExStatus.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.android.settings",
-                    "com.android.settings.Settings$DataUsageSummaryActivity"));
-
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Timber.v(TAG, "Data settings usage Activity is not present");
-            }
-
-        });
+        mGpsExStatus = findViewById(R.id.gps_ex_status);
+        mGpsExStatus.setOnClickListener(v -> mPresenter.setGpsProvider());
         mBatteryExLevel = findViewById(R.id.battery_ex_label);
         mBatteryExLevel.setOnClickListener(v -> {
                 Intent batterySaverIntent = new Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS);
@@ -622,11 +609,11 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     }
 
     @Override
-    public void showDataStatus(boolean status) {
+    public void showGpsStatus(boolean status) {
         int resId = status ? R.string.on : R.string.off;
-        mDataStatus.setText(resId);
-        mDataExStatus.setText(resId);
-        setQsIconColor(mDataIcon, status);
+        mGpsStatus.setText(resId);
+        mGpsExStatus.setText(resId);
+        setQsIconColor(mGpsIcon, status);
     }
 
     @Override
@@ -673,10 +660,15 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     }
 
     private void adjustTextWarning(TextView tv, int color) {
-        tv.setTextColor(color);
+        int colorToApply = color;
+        if (mUserProfile.colorProfile == ColorProfile.CONTRAST) {
+            colorToApply = Color.WHITE;
+        }
+
+        tv.setTextColor(colorToApply);
         for (Drawable dr : tv.getCompoundDrawablesRelative()) {
             if (dr != null) {
-                DrawUtils.setColor(dr, color);
+                DrawUtils.setColor(dr, colorToApply);
             }
         }
     }

@@ -2810,8 +2810,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Collections.sort(letters);
 
         LettersAdapter mLettersAdapter = new LettersAdapter(letters, this);
-        mLettersList.setAdapter(mLettersAdapter);
-        mLettersList.setLayoutManager(new LinearLayoutManager(this));
+        if (mLettersList != null) {
+            mLettersList.setAdapter(mLettersAdapter);
+            mLettersList.setLayoutManager(new LinearLayoutManager(this));
+        }
     }
 
     private long mLastTouchTimestamp;

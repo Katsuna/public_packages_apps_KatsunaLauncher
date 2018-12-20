@@ -75,7 +75,7 @@ public class DashboardPresenter implements DashboardContract.Presenter {
             mDashboardView.setBrightnessLevel(mSettingsController.getBrightness());
             mDashboardView.showBatteryLevel(mSettingsController.getBatterLevel());
             mDashboardView.showWifiStatus(mSettingsController.isWifiEnabled());
-            mDashboardView.showDataStatus(mSettingsController.isDataEnabled());
+            mDashboardView.showGpsStatus(mDeviceUtils.isLocationGpsProviderEnabled());
             mDashboardView.showDndStatus(mSettingsController.isDndModeOn());
         } else {
             mDashboardView.askPermissionToWriteSettings();
@@ -218,6 +218,11 @@ public class DashboardPresenter implements DashboardContract.Presenter {
                 expandFullWeather(true);
                 break;
         }
+    }
+
+    @Override
+    public void setGpsProvider() {
+        mDeviceUtils.setGpsProviderStatus();
     }
 
     private void expandFullWeather(boolean flag) {

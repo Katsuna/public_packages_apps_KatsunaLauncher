@@ -14,4 +14,6 @@ public interface IDeviceUtils {
 
     boolean isLocationNetworkProviderEnabled();
 
+    void setGpsProviderStatus();
+
 }
