@@ -19,6 +19,8 @@
 
     <string name="workspace_activity">Activities</string>
 
+    <!-- strings from katsuna widgets -->
+
     <!-- monday shortname-->
     <string name="monday">Mon</string>
     <!-- tuesday shortname-->
@@ -199,6 +201,8 @@
     <string name="permission_button">Grant Permissions</string>
     <!-- text in screen when no location permission is granted-->
     <string name="no_permission_text">Please click on the button below to allow access to weather data.</string>
+    <!-- eof strings from katsuna widgets -->
+
     <string name="dateFormat" translatable="false">EEEE dd MMMM</string>
 
     <string name="no_weather">No previous data.</string>
