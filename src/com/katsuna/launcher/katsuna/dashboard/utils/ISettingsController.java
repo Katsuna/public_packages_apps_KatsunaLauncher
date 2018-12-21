@@ -25,4 +25,6 @@ public interface ISettingsController {
     void setDndMode(boolean enabled);
 
     boolean canModifySystemSetting();
+
+    void launchSettings();
 }

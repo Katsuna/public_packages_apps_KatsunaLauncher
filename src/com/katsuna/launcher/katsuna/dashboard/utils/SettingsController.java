@@ -11,6 +11,9 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
+import com.katsuna.commons.KatsunaIntents;
+import com.katsuna.commons.utils.KatsunaUtils;
+
 import timber.log.Timber;
 
 import static android.content.Context.AUDIO_SERVICE;
@@ -139,6 +142,17 @@ public class SettingsController implements ISettingsController {
     @Override
     public boolean canModifySystemSetting() {
         return Settings.System.canWrite(mContext);
+    }
+
+    @Override
+    public void launchSettings() {
+        if (KatsunaUtils.katsunaOsDetected()) {
+            Intent i = new Intent(KatsunaIntents.SETTINGS);
+            mContext.startActivity(i);
+        } else {
+            Intent i = new Intent(Settings.ACTION_SETTINGS);
+            mContext.startActivity(i);
+        }
     }
 
     private AudioManager getAudioManager() {

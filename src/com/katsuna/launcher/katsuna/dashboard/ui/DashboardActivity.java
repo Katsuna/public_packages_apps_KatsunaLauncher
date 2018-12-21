@@ -333,10 +333,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         mDndToggle.setOnCheckedChangeListener((buttonView, isChecked) ->
             mPresenter.setDndStatus(isChecked));
         Button mSettingsButton = findViewById(R.id.settings_button);
-        mSettingsButton.setOnClickListener(v ->
-            startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0)
-        );
-
+        mSettingsButton.setOnClickListener(v -> mPresenter.launchSettings());
         WeatherDataSource dataSource = WeatherDataSourceFactory.getDataSource(this);
         mPermissionUtils = new PermissionUtils(this);
         LocationDataSource locationDataSource = LocationMemoryDataSource.getInstance().init(this);

@@ -84,6 +84,8 @@ public interface DashboardContract {
         void expandDashboardView(DashboardViewType dashboardViewType);
 
         void setGpsProvider();
+
+        void launchSettings();
     }
 
 }

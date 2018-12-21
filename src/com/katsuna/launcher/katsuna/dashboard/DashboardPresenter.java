@@ -225,6 +225,11 @@ public class DashboardPresenter implements DashboardContract.Presenter {
         mDeviceUtils.setGpsProviderStatus();
     }
 
+    @Override
+    public void launchSettings() {
+        mSettingsController.launchSettings();
+    }
+
     private void expandFullWeather(boolean flag) {
         mDashboardView.showDate(flag);
         if (flag) {

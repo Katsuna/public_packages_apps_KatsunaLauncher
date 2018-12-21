@@ -114,6 +114,8 @@ import com.katsuna.launcher.katsuna.IntentKeyCalculator;
 import com.katsuna.launcher.katsuna.LaunchLogInfo;
 import com.katsuna.launcher.katsuna.activities.AdsActivity;
 import com.katsuna.launcher.katsuna.dashboard.ui.DashboardActivity;
+import com.katsuna.launcher.katsuna.dashboard.utils.ISettingsController;
+import com.katsuna.launcher.katsuna.dashboard.utils.SettingsController;
 import com.katsuna.launcher.katsuna.interfaces.LauncherStatsProvider;
 import com.katsuna.launcher.katsuna.utils.ProfileAdjuster;
 import com.katsuna.launcher.keyboard.CustomActionsPopup;
@@ -2747,9 +2749,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mSettingsButton = findViewById(R.id.settings_button);
         mSettingsButton.setOnClickListener(v ->  {
-            Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
-                startActivity(i);
-            });
+            ISettingsController settingsController = new SettingsController(this);
+            settingsController.launchSettings();
+        });
     }
 
     private void showAppSuggestionFab() {
