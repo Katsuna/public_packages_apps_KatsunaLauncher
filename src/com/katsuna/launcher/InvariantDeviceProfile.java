@@ -321,8 +321,7 @@ public class InvariantDeviceProfile {
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
-        return context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
+        return portraitProfile;
     }
 
     private float weight(float x0, float y0, float x1, float y1, float pow) {
