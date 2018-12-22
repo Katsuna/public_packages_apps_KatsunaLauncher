@@ -232,7 +232,7 @@ public class DashboardPresenter implements DashboardContract.Presenter {
 
     private void expandFullWeather(boolean flag) {
         mDashboardView.showDate(flag);
-        if (flag) {
+        if (flag && mShortTermWeather != null) {
             mDashboardView.showShortTermWeather(mShortTermWeather);
         }
         mDashboardView.showExtendedWeather(flag);

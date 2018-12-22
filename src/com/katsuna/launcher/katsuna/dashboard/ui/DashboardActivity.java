@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,8 @@ import com.katsuna.commons.utils.DrawUtils;
 import com.katsuna.commons.utils.KatsunaAlertBuilder;
 import com.katsuna.commons.utils.KatsunaUtils;
 import com.katsuna.commons.utils.ProfileReader;
+import com.katsuna.commons.utils.ScrollUtils;
+import com.katsuna.commons.utils.ScrollVertical;
 import com.katsuna.commons.utils.SeekBarUtils;
 import com.katsuna.commons.utils.SizeAdjuster;
 import com.katsuna.commons.utils.ToggleButtonAdjuster;
@@ -129,6 +132,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     private ImageView mWifiIcon;
     private ImageView mGpsIcon;
     private ImageView mDndIcon;
+    private ScrollView mScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +212,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.common_black38));
 
         mWhite54 = ColorTransparentUtils.convertIntoColorInt(Color.WHITE, 54);
+        mScrollView = findViewById(R.id.dashboard_scroll_view);
         mPermissionContainer = findViewById(R.id.permission_container);
         Button mPermissionButton = findViewById(R.id.permission_button);
         mPermissionButton.setOnClickListener(v ->
@@ -540,6 +545,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         if (flag) {
             mQsLayout.setVisibility(View.GONE);
             mQsExpandedLayout.setVisibility(View.VISIBLE);
+            ScrollUtils.focusOnView(mScrollView, mQsExpandedLayout, ScrollVertical.TOP);
         } else {
             mQsExpandedLayout.setVisibility(View.GONE);
             mQsLayout.setVisibility(View.VISIBLE);
@@ -549,11 +555,17 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     @Override
     public void showExtendedCalendar(boolean flag) {
         mCalendarContainer.setVisibility(flag ? View.VISIBLE : View.GONE);
+        if (flag) {
+            ScrollUtils.focusOnView(mScrollView, mCalendarContainer, ScrollVertical.CENTER);
+        }
     }
 
     @Override
     public void showExtendedWeather(boolean flag) {
         mExtendedWeatherContainer.setVisibility(flag ? View.VISIBLE : View.GONE);
+        if (flag) {
+            ScrollUtils.focusOnView(mScrollView, mWeatherContainer, ScrollVertical.BOTTOM);
+        }
     }
 
     @Override
