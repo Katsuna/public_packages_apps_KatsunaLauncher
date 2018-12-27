@@ -128,7 +128,8 @@
             android:screenOrientation="portrait" />
 
         <activity android:name=".katsuna.dashboard.ui.DashboardActivity"
-            android:label="@string/workspace_activity">
+            android:label="@string/workspace_activity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

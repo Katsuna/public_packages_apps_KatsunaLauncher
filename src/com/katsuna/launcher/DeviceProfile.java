@@ -130,7 +130,7 @@ public class DeviceProfile {
             int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
 
         this.inv = inv;
-        this.isLandscape = isLandscape;
+        this.isLandscape = false;
         this.isMultiWindowMode = isMultiWindowMode;
 
         Resources res = context.getResources();
