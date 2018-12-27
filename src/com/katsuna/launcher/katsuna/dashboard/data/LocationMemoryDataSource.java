@@ -64,7 +64,6 @@ public class LocationMemoryDataSource implements LocationDataSource {
 
                 mLastLocation = location;
                 mLastLocationTime = LocalDateTime.now();
-                callback.onLocationFound(location);
                 stopListeningForUpdates(this);
             }
 
@@ -85,10 +84,7 @@ public class LocationMemoryDataSource implements LocationDataSource {
             }
         };
 
-        if (useGpsSensor()) {
-            // fine locations with gps on
-            mLocationManager.requestLocationUpdates(GPS_PROVIDER, 0, 0, locationListener);
-        } else if (useNetworkForLocation()) {
+        if (useNetworkForLocation()) {
             mLocationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, locationListener);
         } else {
             callback.missingPermission();
@@ -97,8 +93,12 @@ public class LocationMemoryDataSource implements LocationDataSource {
 
         final Handler handler = new Handler();
         handler.postDelayed(() -> {
-            stopListeningForUpdates(locationListener);
-            callback.requestTimedOut();
+            Location location = mLocationManager.getLastKnownLocation(NETWORK_PROVIDER);
+            if (location != null) {
+                callback.onLocationFound(mLastLocation);
+            } else {
+                callback.requestTimedOut();
+            }
         }, SECONDS_TO_WAIT);
     }
 

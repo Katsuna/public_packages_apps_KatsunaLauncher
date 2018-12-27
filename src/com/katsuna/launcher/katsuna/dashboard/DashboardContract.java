@@ -28,9 +28,13 @@ public interface DashboardContract {
 
         void setCurrentWeather(Weather weather);
 
-        void showShortTermWeather(List<Weather> weatherList);
+        void setShortTermWeather(List<Weather> weatherList);
 
-        void showLongTermWeather(List<Weather> weatherList);
+        void setLongTermWeather(List<Weather> weatherList);
+
+        void showShortTermWeather();
+
+        void showLongTermWeather();
 
         void showDate(boolean flag);
 

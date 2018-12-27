@@ -105,6 +105,13 @@ public class DashboardPresenter implements DashboardContract.Presenter {
             // show weather even if its old
             mDashboardView.setCurrentWeather(mTodayWeather);
             mDashboardView.setCurrentDate(calculateDate());
+            if (mShortTermWeather != null) {
+                mDashboardView.setShortTermWeather(mShortTermWeather);
+            }
+            if (mLongTermWeather != null) {
+                mDashboardView.setLongTermWeather(mLongTermWeather);
+            }
+
             mDashboardView.showWeather(true);
 
             // notify for old data
@@ -120,14 +127,16 @@ public class DashboardPresenter implements DashboardContract.Presenter {
     @Override
     public void selectLongTermWeather() {
         if (mLongTermWeather != null) {
-            mDashboardView.showLongTermWeather(mLongTermWeather);
+            mDashboardView.setLongTermWeather(mLongTermWeather);
+            mDashboardView.showLongTermWeather();
         }
     }
 
     @Override
     public void selectShortTermWeather() {
         if (mShortTermWeather != null) {
-            mDashboardView.showShortTermWeather(mShortTermWeather);
+            mDashboardView.setShortTermWeather(mShortTermWeather);
+            mDashboardView.showShortTermWeather();
         }
     }
 
@@ -233,7 +242,8 @@ public class DashboardPresenter implements DashboardContract.Presenter {
     private void expandFullWeather(boolean flag) {
         mDashboardView.showDate(flag);
         if (flag && mShortTermWeather != null) {
-            mDashboardView.showShortTermWeather(mShortTermWeather);
+            mDashboardView.setShortTermWeather(mShortTermWeather);
+            mDashboardView.showShortTermWeather();
         }
         mDashboardView.showExtendedWeather(flag);
     }

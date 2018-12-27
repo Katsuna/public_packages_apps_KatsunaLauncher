@@ -95,7 +95,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     private TextView mCurrentWeatherTemp;
     private TextView mCurrentWeatherTempUnit;
     private TextView mCurrentWeatherDesc;
-    private int[] mDescIDS;
+    private int[] mDayIDS;
+    private int[] mHourIDS;
     private int[] mIconsIDs;
     private int[] mTempIDs;
     private TextView mSelectDay;
@@ -153,8 +154,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     @Override
     protected void onResume() {
         super.onResume();
-
-        mPresenter.loadData();
 
         // calc current userProfile
         UserProfileContainer userProfileContainer = ProfileReader.getKatsunaUserProfile(this);
@@ -251,7 +250,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         mSelectWeek.setOnClickListener(v -> mPresenter.selectLongTermWeather());
 
         // long term and short term weather controls
-        mDescIDS = new int[]{R.id.desc1, R.id.desc2, R.id.desc3, R.id.desc4, R.id.desc5, R.id.desc6};
+        mDayIDS = new int[]{R.id.day1, R.id.day2, R.id.day3, R.id.day4, R.id.day5, R.id.day6};
+        mHourIDS =new int[]{R.id.hour1, R.id.hour2, R.id.hour3, R.id.hour4, R.id.hour5, R.id.hour6};
         mIconsIDs = new int[]{R.id.icon1, R.id.icon2, R.id.icon3, R.id.icon4, R.id.icon5, R.id.icon6};
         mTempIDs = new int[]{R.id.temp1, R.id.temp2, R.id.temp3, R.id.temp4, R.id.temp5, R.id.temp6};
 
@@ -437,8 +437,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     }
 
     @Override
-    public void showShortTermWeather(List<Weather> weatherList) {
-        mShortTermShown = true;
+    public void setShortTermWeather(List<Weather> weatherList) {
         StringBuilder list = new StringBuilder();
         for (Weather weather : weatherList) {
             list.append(weather.toString()).append("\\n");
@@ -452,7 +451,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
                 Weather weather = weatherList.get(i);
 
                 // desc
-                TextView tv = findViewById(mDescIDS[i]);
+                TextView tv = findViewById(mHourIDS[i]);
                 tv.setText(format.format(weather.getDate()));
 
                 // icon
@@ -469,8 +468,67 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
                 tv.setText(weather.getTemperatureFull());
             }
         }
+    }
 
+    @Override
+    public void setLongTermWeather(List<Weather> weatherList) {
+        StringBuilder list = new StringBuilder();
+        for (Weather weather : weatherList) {
+            list.append(weather.toString()).append("\\n");
+        }
+        Timber.tag(TAG).d("setLongTermWeather %s", list);
+
+        if (weatherList.size() > 0) {
+            for (int i = 0; i < 6; i++) {
+                Weather weather = weatherList.get(i);
+
+                // desc
+                String dayName = WeatherUtils.getDay(this, weather.getDate());
+                TextView tv = findViewById(mDayIDS[i]);
+                tv.setText(dayName);
+
+                // icon
+                int hour = LocalTime.now().getHour();
+                int resId = ConditionUtils.getDrawableId(weather.getCondition(), hour);
+                if (resId != 0) {
+                    ImageView iv = findViewById(mIconsIDs[i]);
+                    Drawable drawable = ContextCompat.getDrawable(this, resId);
+                    iv.setImageDrawable(drawable);
+                }
+
+                // temperature
+                tv = findViewById(mTempIDs[i]);
+                tv.setText(weather.getTemperatureFull());
+            }
+        }
+    }
+
+    @Override
+    public void showShortTermWeather() {
+        mShortTermShown = true;
+        adjustDayHourVisibility();
         adjustShortTermColors();
+    }
+
+    @Override
+    public void showLongTermWeather() {
+        mShortTermShown = false;
+        adjustDayHourVisibility();
+        adjustShortTermColors();
+    }
+
+    private void adjustDayHourVisibility() {
+        for (int i = 0; i < 6; i++) {
+            TextView dayTextView = findViewById(mDayIDS[i]);
+            TextView hourTextView = findViewById(mHourIDS[i]);
+            if (mShortTermShown) {
+                dayTextView.setVisibility(View.GONE);
+                hourTextView.setVisibility(View.VISIBLE);
+            } else {
+                hourTextView.setVisibility(View.GONE);
+                dayTextView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void adjustShortTermColors() {
@@ -497,42 +555,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
             }
             mSelectDayUnderline.setBackgroundColor(Color.TRANSPARENT);
         }
-    }
-
-    @Override
-    public void showLongTermWeather(List<Weather> weatherList) {
-        mShortTermShown = false;
-        StringBuilder list = new StringBuilder();
-        for (Weather weather : weatherList) {
-            list.append(weather.toString()).append("\\n");
-        }
-        Timber.tag(TAG).d("setLongTermWeather %s", list);
-
-        if (weatherList.size() > 0) {
-            for (int i = 0; i < 6; i++) {
-                Weather weather = weatherList.get(i);
-
-                // desc
-                String dayName = WeatherUtils.getDay(this, weather.getDate());
-                TextView tv = findViewById(mDescIDS[i]);
-                tv.setText(dayName);
-
-                // icon
-                int hour = LocalTime.now().getHour();
-                int resId = ConditionUtils.getDrawableId(weather.getCondition(), hour);
-                if (resId != 0) {
-                    ImageView iv = findViewById(mIconsIDs[i]);
-                    Drawable drawable = ContextCompat.getDrawable(this, resId);
-                    iv.setImageDrawable(drawable);
-                }
-
-                // temperature
-                tv = findViewById(mTempIDs[i]);
-                tv.setText(weather.getTemperatureFull());
-            }
-        }
-
-        adjustShortTermColors();
     }
 
     @Override

@@ -86,12 +86,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc1"
+                android:id="@+id/day1"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour1"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon1"
@@ -118,12 +128,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc2"
+                android:id="@+id/day2"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour2"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon2"
@@ -150,12 +170,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc3"
+                android:id="@+id/day3"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour3"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon3"
@@ -182,12 +212,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc4"
+                android:id="@+id/day4"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour4"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon4"
@@ -214,12 +254,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc5"
+                android:id="@+id/day5"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour5"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon5"
@@ -246,12 +296,22 @@
             android:orientation="vertical">
 
             <com.katsuna.commons.controls.KatsunaTextView
-                android:id="@+id/desc6"
+                android:id="@+id/day6"
+                style="@style/WeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:sizeProfileEnabled="true"
+                app:sizeProfileKeyV2="BUTTON" />
+
+            <com.katsuna.commons.controls.KatsunaTextView
+                android:id="@+id/hour6"
                 style="@style/WeatherDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:sizeProfileEnabled="true"
-                app:sizeProfileKeyV2="BUTTON" />
+                app:sizeProfileKeyV2="BUTTON"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/icon6"
