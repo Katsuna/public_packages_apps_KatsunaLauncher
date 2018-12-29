@@ -106,6 +106,8 @@
     <style name="KatsunaText.Toggle.Expanded">
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:textOn">@string/common_on</item>
         <item name="android:textOff">@string/common_off</item>
         <item name="android:ellipsize">end</item>

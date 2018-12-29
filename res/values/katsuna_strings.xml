@@ -213,6 +213,7 @@
     <string name="sync_problem">Sync problem please try again.</string>
     <string name="no_internet">No internet connection.</string>
     <string name="no_gps_enabled">Please enable your gps.</string>
+    <string name="no_location_found">No location found please try again.</string>
 
     <!-- used for icon content description -->
     <string name="weather_icon">weather symbol</string>

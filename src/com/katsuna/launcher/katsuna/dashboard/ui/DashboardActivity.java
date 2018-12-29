@@ -402,6 +402,11 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
     }
 
     @Override
+    public void showNoLocationFound() {
+        Toast.makeText(this, R.string.no_location_found, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void showWeather(boolean flag) {
         mWeatherContainer.setVisibility(flag ? View.VISIBLE : View.GONE);
     }

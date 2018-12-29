@@ -11,6 +11,9 @@ public interface LocationDataSource {
         void onLocationFound(Location location);
 
         void missingPermission();
-        void requestTimedOut();
+
+        void gpsSensorsTurnedOff();
+
+        void noLocationFound();
     }
 }

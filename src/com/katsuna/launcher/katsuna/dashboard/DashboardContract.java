@@ -18,6 +18,8 @@ public interface DashboardContract {
 
         void showNoGpsProviderEnabled();
 
+        void showNoLocationFound();
+
         void showWeather(boolean flag);
 
         void showNoWeatherWarning(boolean flag);

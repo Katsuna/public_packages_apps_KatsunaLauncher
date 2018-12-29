@@ -24,12 +24,14 @@ import static android.location.LocationManager.NETWORK_PROVIDER;
 public class LocationMemoryDataSource implements LocationDataSource {
 
     private static final String TAG = LocationMemoryDataSource.class.getSimpleName();
+    @SuppressLint("StaticFieldLeak")
     private static final LocationMemoryDataSource mInstance = new LocationMemoryDataSource();
-    private static final long SECONDS_TO_WAIT = 1000 * 10;
+    private static final long SECONDS_TO_WAIT = 1000 * 5;
     private Context mContext;
     private LocationManager mLocationManager;
     private Location mLastLocation;
     private LocalDateTime mLastLocationTime;
+    private String mSelectedProvider;
 
     private LocationMemoryDataSource() {
     }
@@ -57,6 +59,22 @@ public class LocationMemoryDataSource implements LocationDataSource {
             return;
         }
 
+        // check for missing permissions
+        if (noGpsPermissionGranted()) {
+            callback.missingPermission();
+            return;
+        }
+
+        // check for enabled gps provider
+        if (useNetworkForLocation()) {
+            mSelectedProvider = NETWORK_PROVIDER;
+        } else if (useGpsSensor()) {
+            mSelectedProvider = GPS_PROVIDER;
+        } else {
+            callback.gpsSensorsTurnedOff();
+            return;
+        }
+
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -80,24 +98,19 @@ public class LocationMemoryDataSource implements LocationDataSource {
             @Override
             public void onProviderDisabled(String provider) {
                 Timber.tag(TAG).d("onProviderDisabled %s", provider);
-                callback.missingPermission();
+                callback.gpsSensorsTurnedOff();
             }
         };
 
-        if (useNetworkForLocation()) {
-            mLocationManager.requestLocationUpdates(NETWORK_PROVIDER, 0, 0, locationListener);
-        } else {
-            callback.missingPermission();
-            return;
-        }
+        mLocationManager.requestLocationUpdates(mSelectedProvider, 0, 0, locationListener);
 
         final Handler handler = new Handler();
         handler.postDelayed(() -> {
-            Location location = mLocationManager.getLastKnownLocation(NETWORK_PROVIDER);
-            if (location != null) {
-                callback.onLocationFound(mLastLocation);
+            Location location = mLocationManager.getLastKnownLocation(mSelectedProvider);
+            if (location == null) {
+                callback.noLocationFound();
             } else {
-                callback.requestTimedOut();
+                callback.onLocationFound(mLastLocation);
             }
         }, SECONDS_TO_WAIT);
     }
@@ -110,13 +123,25 @@ public class LocationMemoryDataSource implements LocationDataSource {
         }
     }
 
-    private boolean useGpsSensor() {
+    private boolean noGpsPermissionGranted() {
+        return !(fineGpsPermissionGranted() || coarseGpsPermissionGranted());
+    }
+
+    private boolean fineGpsPermissionGranted() {
         return ActivityCompat.checkSelfPermission(mContext, ACCESS_FINE_LOCATION)
-            == PERMISSION_GRANTED && mLocationManager.isProviderEnabled(GPS_PROVIDER);
+            == PERMISSION_GRANTED;
+    }
+
+    private boolean coarseGpsPermissionGranted() {
+        return ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION)
+            == PERMISSION_GRANTED;
+    }
+
+    private boolean useGpsSensor() {
+        return mLocationManager.isProviderEnabled(GPS_PROVIDER);
     }
 
     private boolean useNetworkForLocation() {
-        return ActivityCompat.checkSelfPermission(mContext, ACCESS_COARSE_LOCATION)
-            == PERMISSION_GRANTED && mLocationManager.isProviderEnabled(NETWORK_PROVIDER);
+        return mLocationManager.isProviderEnabled(NETWORK_PROVIDER);
     }
 }

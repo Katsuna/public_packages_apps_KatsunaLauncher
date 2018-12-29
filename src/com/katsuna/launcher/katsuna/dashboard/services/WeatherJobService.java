@@ -73,12 +73,17 @@ public class WeatherJobService extends JobService {
 
             @Override
             public void missingPermission() {
-                Timber.tag(TAG).d("missingPermissions for location ");
+                Timber.tag(TAG).d("missingPermissions for location");
             }
 
             @Override
-            public void requestTimedOut() {
-                Timber.tag(TAG).d("requestTimedOut for location ");
+            public void gpsSensorsTurnedOff() {
+                Timber.tag(TAG).d("gps sensors turned off");
+            }
+
+            @Override
+            public void noLocationFound() {
+                Timber.tag(TAG).d("no location found");
             }
         });
 

@@ -160,12 +160,17 @@ public class DashboardPresenter implements DashboardContract.Presenter {
 
             @Override
             public void missingPermission() {
-
+                mDashboardView.showMissingLocationPermissions(true);
             }
 
             @Override
-            public void requestTimedOut() {
+            public void gpsSensorsTurnedOff() {
+                mDashboardView.showNoGpsProviderEnabled();
+            }
 
+            @Override
+            public void noLocationFound() {
+                mDashboardView.showNoLocationFound();
             }
         });
     }
