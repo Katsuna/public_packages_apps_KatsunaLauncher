@@ -1,19 +1,16 @@
 package com.katsuna.launcher.katsuna.dashboard;
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.katsuna.commons.utils.KatsunaUtils;
 import com.katsuna.launcher.katsuna.dashboard.data.LocationDataSource;
 import com.katsuna.launcher.katsuna.dashboard.data.WeatherDataSource;
 import com.katsuna.launcher.katsuna.dashboard.domain.Weather;
-import com.katsuna.launcher.katsuna.dashboard.tasks.LongTermWeatherTask;
-import com.katsuna.launcher.katsuna.dashboard.tasks.ShortTermWeatherTask;
-import com.katsuna.launcher.katsuna.dashboard.tasks.WeatherTask;
 import com.katsuna.launcher.katsuna.dashboard.utils.IDeviceUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.IPermissionUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.ISettingsController;
+import com.katsuna.launcher.katsuna.dashboard.utils.IWeatherSync;
 
 import org.threeten.bp.DateTimeUtils;
 import org.threeten.bp.Instant;
@@ -25,8 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import timber.log.Timber;
 
 import static com.katsuna.launcher.katsuna.WeatherConstants.LOCATION_PERMISSIONS;
 
@@ -43,6 +38,7 @@ public class DashboardPresenter implements DashboardContract.Presenter {
     private final LocationDataSource mLocationDataSource;
     private final IDeviceUtils mDeviceUtils;
     private final ISettingsController mSettingsController;
+    private final IWeatherSync mWeatherSync;
     private Weather mTodayWeather;
     private List<Weather> mShortTermWeather;
     private List<Weather> mLongTermWeather;
@@ -52,13 +48,15 @@ public class DashboardPresenter implements DashboardContract.Presenter {
                               @NonNull IPermissionUtils permissionUtils,
                               @NonNull LocationDataSource locationDataSource,
                               @NonNull IDeviceUtils deviceUtils,
-                              @NonNull ISettingsController settingsController) {
+                              @NonNull ISettingsController settingsController,
+                              @NonNull IWeatherSync weatherSync) {
         mWeatherDataSource = weatherDataSource;
         mDashboardView = weatherView;
         mPermissionUtils = permissionUtils;
         mLocationDataSource = locationDataSource;
         mDeviceUtils = deviceUtils;
         mSettingsController = settingsController;
+        mWeatherSync = weatherSync;
 
         mDashboardView.setPresenter(this);
     }
@@ -155,7 +153,17 @@ public class DashboardPresenter implements DashboardContract.Presenter {
         mLocationDataSource.getLocation(new LocationDataSource.GetLocationCallback() {
             @Override
             public void onLocationFound(Location location) {
-                locationCurrentWeather(location);
+                mWeatherSync.sync(location, new IWeatherSync.WeatherSyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        loadWeather();
+                    }
+
+                    @Override
+                    public void onError() {
+                        mDashboardView.showSyncProblem();
+                    }
+                });
             }
 
             @Override
@@ -251,49 +259,6 @@ public class DashboardPresenter implements DashboardContract.Presenter {
             mDashboardView.showShortTermWeather();
         }
         mDashboardView.showExtendedWeather(flag);
-    }
-
-    private void locationCurrentWeather(Location location) {
-        Timber.tag(TAG).d("loading current weather for location %s", location);
-
-        new WeatherTask(null, location, mWeatherDataSource,
-            (response) -> {
-                if (response.allGood()) {
-                    Timber.tag(TAG).d("loading short term");
-                    loadShortTermWeather(location);
-                } else {
-                    mDashboardView.showSyncProblem();
-                    Timber.tag(TAG).e("Problem problems: %s", response.problems());
-                }
-            }
-        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void loadShortTermWeather(Location location) {
-        Timber.tag(TAG).d("loading short term weather for location %s", location);
-
-        new ShortTermWeatherTask(null, location, mWeatherDataSource, (response) -> {
-            if (response.allGood()) {
-                Timber.tag(TAG).d("loading long term");
-                loadLongTermWeather(location);
-            } else {
-                mDashboardView.showSyncProblem();
-                Timber.tag(TAG).e("Problem problems: %s", response.problems());
-            }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void loadLongTermWeather(Location location) {
-        Timber.tag(TAG).d("loading long term weather for location %s", location);
-
-        new LongTermWeatherTask(null, location, mWeatherDataSource, (response) -> {
-            if (response.allGood()) {
-                loadWeather();
-            } else {
-                mDashboardView.showSyncProblem();
-                Timber.tag(TAG).e("Problem problems: %s", response.problems());
-            }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

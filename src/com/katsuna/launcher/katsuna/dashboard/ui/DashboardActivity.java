@@ -58,10 +58,12 @@ import com.katsuna.launcher.katsuna.dashboard.utils.DeviceUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.IDeviceUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.IPermissionUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.ISettingsController;
+import com.katsuna.launcher.katsuna.dashboard.utils.IWeatherSync;
 import com.katsuna.launcher.katsuna.dashboard.utils.PermissionUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.SettingsController;
 import com.katsuna.launcher.katsuna.dashboard.utils.SoundBroadcastReceiver;
 import com.katsuna.launcher.katsuna.dashboard.utils.WeatherJobScheduler;
+import com.katsuna.launcher.katsuna.dashboard.utils.WeatherSync;
 import com.katsuna.launcher.katsuna.dashboard.utils.WeatherUtils;
 
 import org.threeten.bp.LocalTime;
@@ -344,8 +346,10 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         LocationDataSource locationDataSource = LocationMemoryDataSource.getInstance().init(this);
         IDeviceUtils deviceUtils = new DeviceUtils(this);
         ISettingsController settingsController = new SettingsController(this);
+        IWeatherSync weatherSync = new WeatherSync(dataSource);
+
         new DashboardPresenter(dataSource, this, mPermissionUtils, locationDataSource, deviceUtils,
-            settingsController);
+            settingsController, weatherSync);
 
         mPresenter.start();
 
