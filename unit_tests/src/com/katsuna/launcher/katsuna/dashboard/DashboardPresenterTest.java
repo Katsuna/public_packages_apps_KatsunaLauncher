@@ -24,6 +24,9 @@ import java.util.List;
 
 import static com.katsuna.commons.utils.KatsunaUtils.KATSUNA_CALENDAR_PACKAGE;
 import static com.katsuna.launcher.katsuna.WeatherConstants.LOCATION_PERMISSIONS;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +58,9 @@ public class DashboardPresenterTest {
 
     @Captor
     private ArgumentCaptor<LocationDataSource.GetLocationCallback> mLocationCallback;
+
+    @Captor
+    private ArgumentCaptor<IWeatherSync.WeatherSyncCallback> mWeatherSyncCallback;
 
     @Before
     public void setupAlarmsPresenter() {
@@ -342,7 +348,7 @@ public class DashboardPresenterTest {
     }
 
     @Test
-    public void tryingToSyncWeatherWithInternet_runsQueryOnDatasource() {
+    public void syncWeatherButNoLocationFound_showsWarning() {
         allPermissionsGranted();
 
         // When loading data
@@ -359,7 +365,139 @@ public class DashboardPresenterTest {
         mPresenter.sync();
 
         verify(mLocationDatasource).getLocation(mLocationCallback.capture());
-        //mLocationCallback.getValue().missingPermission();
+        mLocationCallback.getValue().noLocationFound();
+
+        verify(mView).showNoLocationFound();
+    }
+
+    @Test
+    public void syncWeatherWithNoPermission_showsWarning() {
+        allPermissionsGranted();
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity and gps
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(true);
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mLocationDatasource).getLocation(mLocationCallback.capture());
+        mLocationCallback.getValue().missingPermission();
+
+        verify(mView).showMissingLocationPermissions(true);
+    }
+
+    @Test
+    public void syncWeatherWithNoGps_showsWarning() {
+        allPermissionsGranted();
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity and gps
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(true);
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mLocationDatasource).getLocation(mLocationCallback.capture());
+        mLocationCallback.getValue().gpsSensorsTurnedOff();
+
+        verify(mView).showNoGpsProviderEnabled();
+    }
+
+    @Test
+    public void syncWeatherWithLocationFound_initiatesSyncing() {
+        allPermissionsGranted();
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity and gps
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(true);
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mLocationDatasource).getLocation(mLocationCallback.capture());
+        Location location = new Location("");
+        mLocationCallback.getValue().onLocationFound(location);
+
+        verify(mWeatherSync).sync(eq(location), anyObject());
+    }
+
+    @Test
+    public void syncWeatherSyncError_showsWarning() {
+        allPermissionsGranted();
+
+        Location location = new Location("");
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity and gps
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(true);
+
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mLocationDatasource).getLocation(mLocationCallback.capture());
+
+        mLocationCallback.getValue().onLocationFound(location);
+
+        verify(mWeatherSync).sync(eq(location), mWeatherSyncCallback.capture());
+
+        mWeatherSyncCallback.getValue().onError();
+        verify(mView).showSyncProblem();
+    }
+
+    @Test
+    public void syncWeatherSucceeded_showsWeather() {
+        allPermissionsGranted();
+
+        Location location = new Location("");
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity and gps
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(true);
+
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mLocationDatasource).getLocation(mLocationCallback.capture());
+
+        mLocationCallback.getValue().onLocationFound(location);
+
+        verify(mWeatherSync).sync(eq(location), mWeatherSyncCallback.capture());
+
+        mWeatherSyncCallback.getValue().onSuccess();
+        verify(mView).setCurrentWeather(any());
     }
 
     @Test
@@ -415,7 +553,6 @@ public class DashboardPresenterTest {
         verify(mView, times(2)).setShortTermWeather(weatherList);
         verify(mView, times(2)).showShortTermWeather();
     }
-
 
 
     private void noRecentWeather() {

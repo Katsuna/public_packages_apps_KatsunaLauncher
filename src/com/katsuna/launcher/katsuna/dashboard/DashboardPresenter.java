@@ -263,6 +263,7 @@ public class DashboardPresenter implements DashboardContract.Presenter {
 
     @Override
     public void start() {
+        // no op yet
     }
 
     private String calculateDate() {
