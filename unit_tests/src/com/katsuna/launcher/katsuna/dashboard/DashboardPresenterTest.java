@@ -1,11 +1,14 @@
 package com.katsuna.launcher.katsuna.dashboard;
 
+import android.location.Location;
+
 import com.katsuna.launcher.katsuna.dashboard.data.LocationDataSource;
 import com.katsuna.launcher.katsuna.dashboard.data.WeatherDataSource;
 import com.katsuna.launcher.katsuna.dashboard.domain.Weather;
 import com.katsuna.launcher.katsuna.dashboard.utils.IDeviceUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.IPermissionUtils;
 import com.katsuna.launcher.katsuna.dashboard.utils.ISettingsController;
+import com.katsuna.launcher.katsuna.dashboard.utils.IWeatherSync;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +19,12 @@ import org.mockito.MockitoAnnotations;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.katsuna.commons.utils.KatsunaUtils.KATSUNA_CALENDAR_PACKAGE;
 import static com.katsuna.launcher.katsuna.WeatherConstants.LOCATION_PERMISSIONS;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +50,9 @@ public class DashboardPresenterTest {
     @Mock
     private ISettingsController mSettingsController;
 
+    @Mock
+    private IWeatherSync mWeatherSync;
+
     @Captor
     private ArgumentCaptor<LocationDataSource.GetLocationCallback> mLocationCallback;
 
@@ -52,12 +62,14 @@ public class DashboardPresenterTest {
         MockitoAnnotations.initMocks(this);
 
         mPresenter = new DashboardPresenter(mWeatherDataSource, mView, mPermissionUtils,
-            mLocationDatasource, mDeviceUtils, mSettingsController);
+            mLocationDatasource, mDeviceUtils, mSettingsController, mWeatherSync);
 
     }
 
     @Test
     public void createPresenter_setsThePresenterToView() {
+        mPresenter.start();
+
         // Then the presenter is set to the view
         verify(mView).setPresenter(mPresenter);
     }
@@ -149,13 +161,91 @@ public class DashboardPresenterTest {
     }
 
     @Test
+    public void selectingSettings_ShowsExtendedSettings() {
+        allPermissionsGranted();
+
+        // when expanding settings
+        mPresenter.expandDashboardView(DashboardViewType.SETTINGS);
+
+        // settings extended view is shown only
+        verify(mView).showExtendedSettings(true);
+        verify(mView).showExtendedCalendar(false);
+        verify(mView).showExtendedWeather(false);
+    }
+
+    @Test
+    public void launchSettings_callsSettingsController() {
+        allPermissionsGranted();
+
+        mPresenter.launchSettings();
+
+        verify(mSettingsController).launchSettings();
+    }
+
+    @Test
+    public void setGpsProvider_callsDeviceUtilsGpsProvider() {
+        allPermissionsGranted();
+
+        mPresenter.setGpsProvider();
+
+        verify(mDeviceUtils).setGpsProviderStatus();
+    }
+
+    @Test
+    public void setDndMode_callsSettingsController() {
+        allPermissionsGranted();
+
+        mPresenter.setDndStatus(false);
+
+        verify(mSettingsController).setDndMode(false);
+    }
+
+    @Test
+    public void setWifiStatus_callsSettingsController() {
+        allPermissionsGranted();
+
+        mPresenter.setWifiStatus(false);
+
+        verify(mSettingsController).setWifiEnabled(false);
+    }
+
+    @Test
+    public void setVolume_callsSettingsController() {
+        allPermissionsGranted();
+
+        mPresenter.setVolume(50);
+
+        verify(mSettingsController).setVolume(50);
+    }
+
+    @Test
+    public void loadVolume_callsSettingsControllerAndShowsVolume() {
+        allPermissionsGranted();
+
+        int expectedVolume = 50;
+        when(mSettingsController.getVolume()).thenReturn(expectedVolume);
+
+        mPresenter.loadVolume();
+
+        verify(mSettingsController).getVolume();
+        verify(mView).setVolume(expectedVolume);
+    }
+
+    @Test
+    public void setBrightness_callsSettingsController() {
+        allPermissionsGranted();
+
+        int brightnessLevel = 50;
+        mPresenter.setBrightness(brightnessLevel);
+
+        verify(mSettingsController).setBrightness(brightnessLevel);
+    }
+
+    @Test
     public void selectingCalendar_ShowsExtendedCalendar() {
         allPermissionsGranted();
 
-        // When loading data
-        mPresenter.loadData();
-
-        // and then expanding calendar
+        // when expanding calendar
         mPresenter.expandDashboardView(DashboardViewType.CALENDAR);
 
         // then calendar extended view is shown
@@ -231,6 +321,27 @@ public class DashboardPresenterTest {
     }
 
     @Test
+    public void tryingToSyncWeatherWithNoGpsProvider_ShowsWarning() {
+        allPermissionsGranted();
+
+        // When loading data
+        mPresenter.loadData();
+
+        // with no recent weather
+        noRecentWeather();
+
+        // with internet connectivity
+        when(mDeviceUtils.isNetworkConnected()).thenReturn(true);
+        // but no gps provider enabled
+        when(mDeviceUtils.hasALocationProviderEnabled()).thenReturn(false);
+
+        // and then trying to sync
+        mPresenter.sync();
+
+        verify(mView).showNoGpsProviderEnabled();
+    }
+
+    @Test
     public void tryingToSyncWeatherWithInternet_runsQueryOnDatasource() {
         allPermissionsGranted();
 
@@ -258,7 +369,7 @@ public class DashboardPresenterTest {
         // When loading data
         mPresenter.loadData();
 
-        // and then expanding calendar
+        // and then expanding weather
         mPresenter.expandDashboardView(DashboardViewType.WEATHER);
 
         // then calendar extended view is shown
@@ -266,6 +377,46 @@ public class DashboardPresenterTest {
         verify(mView).showExtendedCalendar(false);
         verify(mView).showExtendedWeather(true);
     }
+
+    @Test
+    public void selectingLongTermWeather_ShowsLongTermWeather() {
+        allPermissionsGranted();
+
+        // When loading data
+        List<Weather> weatherList = new ArrayList<>();
+        when(mWeatherDataSource.getLongTerm()).thenReturn(weatherList);
+        mPresenter.loadData();
+
+        // and then expanding weather
+        mPresenter.expandDashboardView(DashboardViewType.WEATHER);
+
+        mPresenter.selectLongTermWeather();
+
+        // then long term weather is set and presented
+        verify(mView).setLongTermWeather(weatherList);
+        verify(mView).showLongTermWeather();
+    }
+
+    @Test
+    public void selectingShortTermWeather_ShowsShortTermWeather() {
+        allPermissionsGranted();
+
+        // When loading data
+        List<Weather> weatherList = new ArrayList<>();
+        when(mWeatherDataSource.getShortTerm()).thenReturn(weatherList);
+        mPresenter.loadData();
+
+        // and then expanding weather
+        mPresenter.expandDashboardView(DashboardViewType.WEATHER);
+
+        mPresenter.selectShortTermWeather();
+
+        // then short term weather is set and presented
+        verify(mView, times(2)).setShortTermWeather(weatherList);
+        verify(mView, times(2)).showShortTermWeather();
+    }
+
+
 
     private void noRecentWeather() {
         // and no weather data
