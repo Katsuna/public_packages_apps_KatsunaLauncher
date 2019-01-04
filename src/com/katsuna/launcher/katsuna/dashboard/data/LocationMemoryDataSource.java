@@ -51,8 +51,9 @@ public class LocationMemoryDataSource implements LocationDataSource {
     public void getLocation(@NonNull final GetLocationCallback callback) {
         Timber.tag(TAG).d("getLocation ...");
 
-        // get cached location
-        if (mLastLocationTime != null &&
+        // get recent cached location if any
+        if (mLastLocation != null &&
+            mLastLocationTime != null &&
             mLastLocationTime.isAfter(LocalDateTime.now().minusMinutes(30))) {
             callback.onLocationFound(mLastLocation);
             Timber.tag(TAG).d("return recently found location ... %s", mLastLocation);
