@@ -1240,6 +1240,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mHotseat;
     }
 
+    public View getViewPagerContainer() {
+        return mViewPagerContainer;
+    }
+
     public View getHotseatSearchBox() {
         return mHotseatSearchBox;
     }

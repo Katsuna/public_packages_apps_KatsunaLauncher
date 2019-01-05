@@ -88,10 +88,13 @@ public class WorkspaceStateTransitionAnimation {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
-            propertySetter.setViewAlpha(mLauncher.getHotseat().getLayout(), hotseatIconsAlpha,
+            float searchBarAlpha = (elements & HOTSEAT_ICONS) != 0 ? 0 : 1;
+            propertySetter.setViewAlpha(mLauncher.getHotseat(), hotseatIconsAlpha,
                     fadeInterpolator);
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                     hotseatIconsAlpha, fadeInterpolator);
+            propertySetter.setViewAlpha(mLauncher.getViewPagerContainer(),
+                searchBarAlpha, fadeInterpolator);
         }
 
         if (!config.playNonAtomicComponent()) {
