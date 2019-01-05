@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.katsuna.launcher.Launcher;
 import com.katsuna.launcher.R;
 import com.katsuna.launcher.Utilities;
+import com.katsuna.launcher.katsuna.UsabilitySettingsActivity;
 import com.katsuna.launcher.popup.ArrowPopup;
 import com.katsuna.launcher.shortcuts.DeepShortcutView;
 import com.katsuna.launcher.userevent.nano.LauncherLogProto.Action;
@@ -146,7 +147,7 @@ public class OptionsPopupView extends ArrowPopup
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
         options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
                 ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
-        options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
+        options.add(new OptionItem(R.string.common_settings, R.drawable.ic_setting,
                 ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
         show(launcher, target, options);
@@ -164,10 +165,9 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     public static boolean startSettings(View view) {
+        Intent i = new Intent(view.getContext(), UsabilitySettingsActivity.class);
         Launcher launcher = Launcher.getLauncher(view.getContext());
-        launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        launcher.startActivity(i);
         return true;
     }
 
