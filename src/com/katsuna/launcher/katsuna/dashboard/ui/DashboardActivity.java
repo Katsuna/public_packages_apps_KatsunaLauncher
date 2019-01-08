@@ -681,7 +681,7 @@ public class DashboardActivity extends AppCompatActivity implements DashboardCon
         SeekBarUtils.adjustSeekbarV3(this, mSoundSeekbar, mUserProfile,
             R.drawable.ic_volume_up_black_24dp, R.drawable.seekbar_progress);
 
-        Drawable toggleBg = BackgroundGenerator.createToggleBgV3(this, mUserProfile);
+        Drawable toggleBg = BackgroundGenerator.createToggleBgV3(this, mUserProfile, false);
         ToggleButtonAdjuster.adjustToggleButton(this, mWifiToggle, toggleBg, mUserProfile);
         ToggleButtonAdjuster.adjustToggleButton(this, mDndToggle, toggleBg, mUserProfile);
 
