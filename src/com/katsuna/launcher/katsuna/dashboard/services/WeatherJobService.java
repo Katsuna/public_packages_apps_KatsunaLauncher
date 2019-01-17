@@ -5,6 +5,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import com.katsuna.launcher.katsuna.dashboard.data.LocationDataSource;
 import com.katsuna.launcher.katsuna.dashboard.data.LocationMemoryDataSource;
@@ -40,7 +41,7 @@ public class WeatherJobService extends JobService {
         LocationDataSource locationDataSource = LocationMemoryDataSource.getInstance().init(this);
         locationDataSource.getLocation(new LocationDataSource.GetLocationCallback() {
             @Override
-            public void onLocationFound(Location location) {
+            public void onLocationFound(@NonNull Location location) {
                 Timber.tag(TAG).d("onLocationFound location= %s", location);
 
                 // fetch weather with corresponding async task

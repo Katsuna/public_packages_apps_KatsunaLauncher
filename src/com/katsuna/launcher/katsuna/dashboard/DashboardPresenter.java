@@ -152,7 +152,7 @@ public class DashboardPresenter implements DashboardContract.Presenter {
 
         mLocationDataSource.getLocation(new LocationDataSource.GetLocationCallback() {
             @Override
-            public void onLocationFound(Location location) {
+            public void onLocationFound(@NonNull Location location) {
                 mWeatherSync.sync(location, new IWeatherSync.WeatherSyncCallback() {
                     @Override
                     public void onSuccess() {

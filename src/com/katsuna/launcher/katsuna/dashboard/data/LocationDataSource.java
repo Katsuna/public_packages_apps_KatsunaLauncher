@@ -8,7 +8,7 @@ public interface LocationDataSource {
     void getLocation(@NonNull GetLocationCallback callback);
 
     interface GetLocationCallback {
-        void onLocationFound(Location location);
+        void onLocationFound(@NonNull Location location);
 
         void missingPermission();
 

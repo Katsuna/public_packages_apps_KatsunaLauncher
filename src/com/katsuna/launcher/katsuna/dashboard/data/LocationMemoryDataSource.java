@@ -111,7 +111,7 @@ public class LocationMemoryDataSource implements LocationDataSource {
             if (location == null) {
                 callback.noLocationFound();
             } else {
-                callback.onLocationFound(mLastLocation);
+                callback.onLocationFound(location);
             }
         }, SECONDS_TO_WAIT);
     }
