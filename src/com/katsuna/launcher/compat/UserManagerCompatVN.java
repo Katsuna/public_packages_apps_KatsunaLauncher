@@ -24,6 +24,8 @@ import android.os.UserHandle;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVM {
 
@@ -38,7 +40,13 @@ public class UserManagerCompatVN extends UserManagerCompatVM {
 
     @Override
     public boolean isUserUnlocked(UserHandle user) {
-        return mUserManager.isUserUnlocked(user);
+        boolean output = false;
+        try {
+            output = mUserManager.isUserUnlocked(user);
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
+        return output;
     }
 
     @Override
