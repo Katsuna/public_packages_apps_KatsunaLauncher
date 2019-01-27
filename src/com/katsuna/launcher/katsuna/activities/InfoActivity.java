@@ -22,7 +22,7 @@ public class InfoActivity extends KatsunaInfoActivity {
 
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            mAppIcon.setImageResource(R.mipmap.ic_launcher);
+            mAppIcon.setImageResource(R.mipmap.ic_katsuna_launcher);
             mAppName.setText(R.string.app_name);
 
             String version = getString(R.string.common_version);
