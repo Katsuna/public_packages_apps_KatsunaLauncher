@@ -21,15 +21,18 @@ public class ProfileAdjuster {
         int pColor1 = ColorCalcV2.getColor(context, ColorProfileKeyV2.PRIMARY_COLOR_1,
             userProfile.colorProfile);
 
-        int radius = context.getResources().getDimensionPixelSize(R.dimen.hot_seat_radius);
-        Drawable drawable = getBackgroundDrawable(pColor1, radius);
+        int pGreyColor1 = ColorCalcV2.getColor(context, ColorProfileKeyV2.PRIMARY_GREY_1,
+            userProfile.colorProfile);
 
-        activitiesButton.setBackground(drawable);
-        settingsButton.setBackground(drawable);
+        int radius = context.getResources().getDimensionPixelSize(R.dimen.hot_seat_radius);
+        Drawable activitiesBg = getBackgroundDrawable(pColor1, radius);
+        Drawable settingsBg = getBackgroundDrawable(pGreyColor1, radius);
+
+        activitiesButton.setBackground(activitiesBg);
+        settingsButton.setBackground(settingsBg);
 
         if (userProfile.colorProfile == ColorProfile.CONTRAST) {
             activitiesButton.setTextColor(Color.WHITE);
-            settingsButton.setTextColor(Color.WHITE);
         } else {
             int black87 = ContextCompat.getColor(context, R.color.common_black87);
             activitiesButton.setTextColor(black87);
