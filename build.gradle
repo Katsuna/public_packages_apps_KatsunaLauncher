@@ -59,8 +59,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 28
-        versionName "3.3.1"
+        versionCode 29
+        versionName "3.4.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         project.ext.set("archivesBaseName", "KatsunaLauncher-" + defaultConfig.versionName)
