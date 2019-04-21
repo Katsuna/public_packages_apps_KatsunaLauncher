@@ -1,17 +1,17 @@
 buildscript {
     repositories {
-        jcenter()
         google()
         maven {
             url 'https://maven.fabric.io/public'
         }
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath 'com.google.gms:google-services:4.0.2' // google-services plugin
-        classpath 'io.fabric.tools:gradle:1.26.1'
-        classpath 'com.google.firebase:firebase-plugins:1.1.5'
+        classpath 'io.fabric.tools:gradle:1.28.0'
+        classpath 'com.google.firebase:firebase-plugins:1.2.0'
     }
 }
 
@@ -44,9 +44,9 @@ ext {
 
     // App dependencies
     supportLibraryVersion = '28.0.0'
-    firebaseVersion = '16.0.6'
-    firebasePerfVersion = '16.2.3'
-    crashlyticsVersion = '2.9.8'
+    firebaseVersion = '16.0.8'
+    firebasePerfVersion = '16.2.5'
+    crashlyticsVersion = '2.9.9'
     threetenabpVersion = '1.1.1'
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
